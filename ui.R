@@ -8,5 +8,9 @@ shinyUI(pageWithSidebar(
   
   sidebarPanel(),
   
-  mainPanel()
+  mainPanel(
+    h2("3D view"),
+    webGLOutput("brain3d"),
+    h2("NBLAST results")
+    )
 ))
