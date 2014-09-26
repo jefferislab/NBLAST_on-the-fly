@@ -21,9 +21,12 @@ frontalView<-function(zoom=0.6){
 
 shinyServer(function(input, output) {
 
-output$brain3d <- renderWebGL({
-  query_neuron <- input$query
-  target_neuron <- input$target
+#######################
+# Pairwise comparison #
+#######################
+output$brain3d_one <- renderWebGL({
+  query_neuron <- input$query_one
+  target_neuron <- input$target_one
   if(is.null(query_neuron) || is.null(target_neuron)) {
     # Dummy plot
     plot3d(FCWB)
@@ -37,13 +40,41 @@ output$brain3d <- renderWebGL({
   }
 })
 
-output$nblast_results <- renderText({
-  query_neuron <- input$query
-  target_neuron <- input$target
+output$nblast_results_one <- renderText({
+  query_neuron <- input$query_one
+  target_neuron <- input$target_one
   if(is.null(query_neuron) || is.null(target_neuron)) {
     ""
   } else {
     fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyallmem)
+  }
+})
+
+
+
+###################
+# One against all #
+###################
+output$brain3d_all <- renderWebGL({
+  query_neuron <- input$query_all
+  if(is.null(query_neuron)) {
+    # Dummy plot
+    plot3d(FCWB)
+    frontalView()
+  } else {
+    clear3d()
+    plot3d(dps[fc_gene_name(query_neuron)], col='red')
+    plot3d(FCWB)
+    frontalView()
+  }
+})
+
+output$nblast_results_all <- renderText({
+  query_neuron <- input$query_all
+  if(is.null(query_neuron)) {
+    ""
+  } else {
+    fc_nblast(fc_gene_name(query_neuron), scoremat=allbyallmem)
   }
 })
 
