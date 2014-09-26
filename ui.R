@@ -71,7 +71,10 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         h2("3D view"),
         webGLOutput("brain3d_all"),
         h2("NBLAST results"),
-        textOutput("nblast_results_all")
+        h3("Top 10 hits"),
+        tableOutput("nblast_results_all_top10"),
+        h3("Score distribution"),
+        plotOutput("nblast_results_all")
       )
     )
   )

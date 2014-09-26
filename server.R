@@ -5,6 +5,7 @@ library(flycircuit)
 library(shiny)
 library(shinyRGL)
 library(shinysky)
+library(ggplot2)
 
 # Load dps object for plotting neurons
 dps <- read.neuronlistfh("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds", localdir=getOption('flycircuit.datadir'))
@@ -69,12 +70,16 @@ output$brain3d_all <- renderWebGL({
   }
 })
 
-output$nblast_results_all <- renderText({
+output$nblast_results_all <- renderPlot({
   query_neuron <- input$query_all
   if(is.null(query_neuron)) {
-    ""
+    NULL
   } else {
-    fc_nblast(fc_gene_name(query_neuron), scoremat=allbyallmem)
+    scores <- fc_nblast(fc_gene_name(query_neuron), scoremat=allbyallmem)
+    output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11]) })
+    nblast_results <- data.frame(scores=scores)
+    p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+    p
   }
 })
 
