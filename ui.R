@@ -1,5 +1,11 @@
+library(nat)
+library(nat.flybrains)
+library(nat.nblast)
+library(flycircuit)
 library(shiny)
 library(shinyRGL)
+library(shinysky)
+library(ggplot2)
 
 dps <- read.neuronlistfh("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds", localdir=getOption('flycircuit.datadir'))
 
