@@ -3,7 +3,7 @@ This project provides a simple interactive demonstration of the [NBLAST](http://
 
 ## Live demo
 
-A live demo of this application is running at <http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/on-the-fly>
+A live demo of this application is running at <http://jefferislab.org/si/nblast/on-the-fly/>
 ## Running locally
 
 ## Setting up a server
