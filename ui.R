@@ -83,6 +83,32 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         plotOutput("nblast_results_all")
       )
     )
+  ),
+  
+  
+  ################
+  # User tracing #
+  ################
+  tabPanel("Upload a tracing",
+    sidebarLayout(  
+      sidebarPanel(
+        h3("Query"),
+        fileInput('tracing_file', "Your tracing:"),
+        br(),
+        br(),
+        submitButton("NBLAST")
+      ),
+      
+      mainPanel(
+        h2("3D view"),
+        webGLOutput("brain3d_tracing"),
+        h2("NBLAST results"),
+        h3("Top 10 hits"),
+        tableOutput("nblast_results_tracing_top10"),
+        h3("Score distribution"),
+        plotOutput("nblast_results_tracing")
+      )
+    )
   )
   
 ))

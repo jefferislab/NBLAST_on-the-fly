@@ -82,4 +82,40 @@ output$nblast_results_all <- renderPlot({
   }
 })
 
+
+
+################
+# User tracing #
+################
+output$brain3d_tracing <- renderWebGL({
+  query_neuron <- input$tracing_file
+  if(is.null(query_neuron)) {
+    # Dummy plot
+    plot3d(FCWB)
+    frontalView()
+  } else {
+    if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+    else tracing_neuron <- read.neuron(query_neuron$datapath)
+    clear3d()
+    plot3d(tracing_neuron, col='red')
+    plot3d(FCWB)
+    frontalView()
+  }
+})
+
+output$nblast_results_tracing <- renderPlot({
+  query_neuron <- input$tracing_file
+  if(is.null(query_neuron)) {
+    NULL
+  } else {
+    if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+    else tracing_neuron <- read.neuron(query_neuron$datapath)
+    scores <- nblast(tracing_neuron, dps)
+    output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10]) })
+    nblast_results <- data.frame(scores=scores)
+    p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+    p
+  }
+})
+
 })
