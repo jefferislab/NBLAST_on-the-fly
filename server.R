@@ -82,7 +82,7 @@ output$nblast_results_all <- renderPlot({
     scores <- fc_nblast(fc_gene_name(query_neuron), scoremat=allbyall)
     output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11]) })
     nblast_results <- data.frame(scores=scores)
-    p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+    p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
     p
   }
 })
@@ -118,7 +118,7 @@ output$nblast_results_tracing <- renderPlot({
     message(system.time(scores <- nblast(dotprops(tracing_neuron), dps[exemplars])))
     output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10]) })
     nblast_results <- data.frame(scores=scores)
-    p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+    p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
     p
   }
 })
