@@ -93,10 +93,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Query"),
-        fileInput('tracing_file', "Your tracing:"),
-        br(),
-        br(),
-        submitButton("NBLAST")
+        fileInput('tracing_file', "Your tracing:")
       ),
       
       mainPanel(
