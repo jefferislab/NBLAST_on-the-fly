@@ -8,7 +8,7 @@ library(shinysky)
 library(ggplot2)
 
 # Load dps object for plotting neurons
-dps <- read.neuronlistfh("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds", localdir=getOption('flycircuit.datadir'))
+dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
 
 # Attach the all-by-all score matrix and load into memory
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
