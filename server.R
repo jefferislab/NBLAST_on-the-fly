@@ -76,7 +76,7 @@ output$brain3d_all <- renderWebGL({
 
 output$nblast_results_all <- renderPlot({
   query_neuron <- input$query_all
-  if(is.null(query_neuron)) {
+  if(query_neuron == "") {
     NULL
   } else {
     scores <- fc_nblast(fc_gene_name(query_neuron), scoremat=allbyall)
