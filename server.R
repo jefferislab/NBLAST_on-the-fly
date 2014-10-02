@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
 output$brain3d_one <- renderWebGL({
   query_neuron <- input$query_one
   target_neuron <- input$target_one
-  if(is.null(query_neuron) || is.null(target_neuron)) {
+  if(query_neuron == "" || target_neuron == "") {
     # Dummy plot
     plot3d(FCWB)
     frontalView()
@@ -43,7 +43,7 @@ output$brain3d_one <- renderWebGL({
 output$nblast_results_one <- renderText({
   query_neuron <- input$query_one
   target_neuron <- input$target_one
-  if(is.null(query_neuron) || is.null(target_neuron)) {
+  if(query_neuron == "" || target_neuron == "") {
     ""
   } else {
     fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall)
@@ -57,7 +57,7 @@ output$nblast_results_one <- renderText({
 ###################
 output$brain3d_all <- renderWebGL({
   query_neuron <- input$query_all
-  if(is.null(query_neuron)) {
+  if(query_neuron == "") {
     # Dummy plot
     plot3d(FCWB)
     frontalView()
