@@ -12,7 +12,6 @@ dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9
 
 # Attach the all-by-all score matrix and load into memory
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
-allbyallmem <- allbyall[, ]
 
 # Define a function for a frontal view of the brain
 frontalView<-function(zoom=0.6){
@@ -47,7 +46,7 @@ output$nblast_results_one <- renderText({
   if(is.null(query_neuron) || is.null(target_neuron)) {
     ""
   } else {
-    fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyallmem)
+    fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall)
   }
 })
 
@@ -75,7 +74,7 @@ output$nblast_results_all <- renderPlot({
   if(is.null(query_neuron)) {
     NULL
   } else {
-    scores <- fc_nblast(fc_gene_name(query_neuron), scoremat=allbyallmem)
+    scores <- fc_nblast(fc_gene_name(query_neuron), scoremat=allbyall)
     output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11]) })
     nblast_results <- data.frame(scores=scores)
     p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
