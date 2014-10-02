@@ -13,6 +13,11 @@ dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9
 # Attach the all-by-all score matrix and load into memory
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
 
+# Load the affinity propagation results
+apres16k.p0 <- load_fcdata("apres16k.p0")
+apresdf <- as.data.frame(apres16k.p0)
+exemplars <- levels(apresdf$exemplar)
+
 # Define a function for a frontal view of the brain
 frontalView<-function(zoom=0.6){
   um=structure(c(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1), .Dim = c(4L, 4L))
@@ -110,7 +115,7 @@ output$nblast_results_tracing <- renderPlot({
   } else {
     if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
     else tracing_neuron <- read.neuron(query_neuron$datapath)
-    scores <- nblast(dotprops(tracing_neuron), dps)
+    message(system.time(scores <- nblast(dotprops(tracing_neuron), dps[exemplars])))
     output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10]) })
     nblast_results <- data.frame(scores=scores)
     p <- ggplot(nblast_results, aes(x=scores)) + stat_density() + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
