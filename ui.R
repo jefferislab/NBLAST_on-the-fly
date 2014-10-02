@@ -45,7 +45,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       
       mainPanel(
         h2("3D view"),
-        webGLOutput("brain3d_one"),
+        webGLOutput("brain3d_one", width="800px", height="600px"),
         h2("NBLAST results"),
         textOutput("nblast_results_one")
       )
@@ -75,7 +75,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       
       mainPanel(
         h2("3D view"),
-        webGLOutput("brain3d_all"),
+        webGLOutput("brain3d_all", width="800px", height="600px"),
         h2("NBLAST results"),
         h3("Top 10 hits"),
         tableOutput("nblast_results_all_top10"),
@@ -101,7 +101,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       
       mainPanel(
         h2("3D view"),
-        webGLOutput("brain3d_tracing"),
+        webGLOutput("brain3d_tracing", width="800px", height="600px"),
         h2("NBLAST results"),
         h3("Top 10 hits"),
         tableOutput("nblast_results_tracing_top10"),
