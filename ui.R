@@ -6,6 +6,7 @@ library(shiny)
 library(shinyRGL)
 library(shinysky)
 library(ggplot2)
+library(shinyIncubator)
 
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
 
@@ -74,6 +75,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       ),
       
       mainPanel(
+        progressInit(),
         h2("3D view"),
         webGLOutput("brain3d_all", width="800px", height="600px"),
         h2("NBLAST results"),
@@ -97,6 +99,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       ),
       
       mainPanel(
+        progressInit(),
         h2("3D view"),
         webGLOutput("brain3d_tracing", width="800px", height="600px"),
         h2("NBLAST results"),
