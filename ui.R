@@ -109,6 +109,14 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         plotOutput("nblast_results_tracing")
       )
     )
+  ),
+  
+  tabPanel("About",
+    mainPanel(
+      "This web app accompanies ", a("Costa et al. (2014) NBLAST: Rapid, sensitive comparison of neuronal structure and construction of neuron family databases", href="http://dx.doi.org/10.1101/006346"), " and acts as a demonstration of the core NBLAST algorithm, along with some features of the ", a("NeuroAnatomy Toolbox", href="https://github.com/jefferis/nat"), " and its helper packages: ", a("nat.nblast,", href="https://github.com/jefferislab/nat.nblast")," ", a("nat.templatebrains", href="https://github.com/jefferislab/nat.templatebrains"), " and ", a("nat.flybrains.", href="https://github.com/jefferislab/nat.flybrains"),
+      h2("Source code"),
+      "The full code for this web app can be downloaded from ", a("GitHub.",href="https://github.com/jefferislab/NBLAST_online")
+    )
   )
   
 ))
