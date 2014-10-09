@@ -71,7 +71,7 @@ output$brain3d_all <- renderWebGL({
     clear3d()
     plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2)
     scores <- sort(fc_nblast(fc_gene_name(query_neuron), names(dps), scoremat=allbyall), decreasing=TRUE)
-    plot3d(dps[scores[2:11]], col=rainbow(10))
+    plot3d(dps[names(scores[2:11])], col=rainbow(10))
     plot3d(FCWB)
     frontalView()
   }
