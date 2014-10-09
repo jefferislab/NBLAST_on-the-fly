@@ -20,6 +20,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   tabPanel("Pairwise comparison",
     sidebarLayout(  
       sidebarPanel(
+        h3("Instructions"),
+        "Select two FlyCircuit neurons to compare with NBLAST. The query neuron will be plotted in red in the 3D viewer to the right, while the target neuron will be drawn in blue.",
         h3("Query:"),
         textInput.typeahead(
           id="query_one",
@@ -60,6 +62,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   tabPanel("One against all",
     sidebarLayout(  
       sidebarPanel(
+        h3("Instructions"),
+        "Select a FlyCircuit neurons to compare against all FlyCircuit neurons, with NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
         h3("Query:"),
         textInput.typeahead(
           id="query_all",
@@ -94,6 +98,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   tabPanel("Upload a tracing",
     sidebarLayout(  
       sidebarPanel(
+        h3("Instructions"),
+        "Upload a tracing to compare against all FlyCircuit neurons, using NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
         h3("Query"),
         fileInput('tracing_file', "Your tracing:")
       ),
