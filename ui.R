@@ -63,7 +63,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Select a FlyCircuit neurons to compare against all FlyCircuit neurons, with NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
+        "Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from red = best to violet = worst).",
         h3("Query:"),
         textInput.typeahead(
           id="query_all",
