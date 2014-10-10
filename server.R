@@ -25,6 +25,21 @@ frontalView<-function(zoom=0.6){
   rgl.viewpoint(userMatrix=um,zoom=zoom)
 }
 
+# Overwrite RGL's inRows function to reduce the number of digits from 7 to 4, reducing download time considerably
+inRows <- function(values, perrow, leadin="\t", digits=4) {
+  if (is.matrix(values)) values <- t(values)
+  values <- c(values)
+  if (is.numeric(values)) values <- formatC(values, digits = digits, width = 1)
+  len <- length(values)
+  if (len%%perrow != 0) values <- c(values, rep("PADDING", perrow - len%%perrow))
+  values <- matrix(values, ncol = perrow, byrow = TRUE)
+  lines <- paste(leadin, apply(values, 1, function(row) paste(row, collapse = ", ")))
+  lines[length(lines)] <- gsub(", PADDING", "", lines[length(lines)])
+  paste(lines, collapse = ",\n")
+}
+environment(inRows) <- asNamespace('rgl')
+assignInNamespace('inRows', inRows, ns='rgl')
+
 shinyServer(function(input, output, session) {
 
 #######################
