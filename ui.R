@@ -79,6 +79,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       ),
       
       mainPanel(
+        HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
         progressInit(),
         h2("3D view"),
         webGLOutput("brain3d_all", width="800px", height="600px"),
@@ -105,6 +106,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       ),
       
       mainPanel(
+        HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
         progressInit(),
         h2("3D view"),
         webGLOutput("brain3d_tracing", width="800px", height="600px"),
