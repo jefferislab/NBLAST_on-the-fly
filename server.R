@@ -144,6 +144,9 @@ output$nblast_results_tracing <- renderPlot({
     if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
     else tracing_neuron <- read.neuron(query_neuron$datapath)
     
+    template_brain <- input$brain
+    message(template_brain)
+    
     scores <- list()
     withProgress(session, min=1, max=10, expr={
       setProgress(message="NBLAST in progress", detail="This may take a few minutes")
