@@ -129,6 +129,12 @@ output$brain3d_tracing <- renderWebGL({
   } else {
     if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
     else tracing_neuron <- read.neuron(query_neuron$datapath)
+    template_brain <- input$brain
+    message(template_brain)
+    if(template_brain != "FCWB") {
+      template_brain <- get(template_brain)
+      tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+    }
     clear3d()
     plot3d(tracing_neuron, col='red')
     plot3d(FCWB)
@@ -146,6 +152,10 @@ output$nblast_results_tracing <- renderPlot({
     
     template_brain <- input$brain
     message(template_brain)
+    if(template_brain != "FCWB") {
+      template_brain <- get(template_brain)
+      tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+    }
     
     scores <- list()
     withProgress(session, min=1, max=10, expr={
