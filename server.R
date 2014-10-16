@@ -77,7 +77,7 @@ output$nblast_results_one <- renderText({
 # One against all #
 ###################
 output$brain3d_all <- renderWebGL({
-  query_neuron <- input$query_all
+  query_neuron <- query_neuron()
   if(query_neuron == "") {
     # Dummy plot
     plot3d(FCWB)
@@ -85,34 +85,41 @@ output$brain3d_all <- renderWebGL({
   } else {
     clear3d()
     plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2)
-    scores <- sort(fc_nblast(fc_gene_name(query_neuron), names(dps), scoremat=allbyall), decreasing=TRUE)
+    scores <- sort(nblast_scores(), decreasing=TRUE)
     plot3d(dps[names(scores[2:11])], col=rainbow(10))
     plot3d(FCWB)
     frontalView()
   }
 })
 
-output$nblast_results_all <- renderPlot({
+query_neuron <- reactive({
   query_neuron <- input$query_all
-  if(query_neuron == "") {
-    NULL
-  } else {    
-    scores <- list()
-    withProgress(session, min=1, max=10, expr={
-      setProgress(message="NBLAST in progress")
-      for(i in 1:10) {
-        chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-        scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
-        setProgress(value=i)
-      }
-    })
-    scores <- unlist(scores)
-    
-    output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron), fc_gene_name(query_neuron), scoremat=allbyall), decreasing=TRUE)[2:11]) })
-    nblast_results <- data.frame(scores=scores)
-    p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
-    p
-  }
+  if(query_neuron == "") return("")
+  query_neuron
+})
+
+nblast_scores <- reactive({
+  query_neuron <- query_neuron()
+  if(query_neuron == "") return(NULL)
+  scores <- list()
+  withProgress(session, min=1, max=10, expr={
+    setProgress(message="NBLAST in progress")
+    for(i in 1:10) {
+      chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
+      scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
+      setProgress(value=i)
+    }
+  })
+  scores <- unlist(scores)
+  scores
+})
+
+output$nblast_results_all <- renderPlot({
+  scores <- nblast_scores()
+  output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11]) })
+  nblast_results <- data.frame(scores=scores)
+  p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+  p
 })
 
 
