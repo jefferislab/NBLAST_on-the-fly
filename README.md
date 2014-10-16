@@ -31,5 +31,6 @@ install_github("rstudio/shiny-incubator")
 ### Data
 You will also need to download our processed/registered version of the 
 [flycircuit.tw](http://flycircuit.tw) dataset. The flycircuit package will 
-enable you to do this. **TODO: add details**.
+enable you to do this. Note that the data will be installed in a default location
+within the home folder of the current user; therefore you must download the data
 ## Setting up a server
