@@ -109,10 +109,15 @@ nblast_scores <- reactive({
 output$nblast_results_all <- renderPlot({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
-  output$nblast_results_all_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11]) })
   nblast_results <- data.frame(scores=scores)
   p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
   p
+})
+
+output$nblast_results_all_top10 <- renderTable({
+  scores <- nblast_scores()
+  if(is.null(scores)) return(NULL)
+  data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11])
 })
 
 
