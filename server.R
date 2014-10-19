@@ -152,27 +152,34 @@ tracing <- reactive({
   tracing_neuron
 })
 
-output$nblast_results_tracing <- renderPlot({
+nblast_scores_tracing <- reactive({
   query_neuron <- tracing()
-  if(is.null(query_neuron)) {
-    NULL
-  } else {
-    scores <- list()
-    withProgress(session, min=1, max=10, expr={
-      setProgress(message="NBLAST in progress", detail="This may take a few minutes")
-      for(i in 1:10) {
-        chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-        scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
-        setProgress(value=i)
-      }
-    })
-    scores <- unlist(scores)
-    
-    output$nblast_results_tracing_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10]) })
-    nblast_results <- data.frame(scores=scores)
-    p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
-    p
-  }
+  if(is.null(query_neuron)) return(NULL)
+  scores <- list()
+  withProgress(session, min=1, max=10, expr={
+    setProgress(message="NBLAST in progress", detail="This may take a few minutes")
+    for(i in 1:10) {
+      chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
+      scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
+      setProgress(value=i)
+    }
+  })
+  unlist(scores)
+})
+
+output$nblast_results_tracing <- renderPlot({
+  scores <- nblast_scores_tracing()
+  if(is.null(scores)) return(NULL)
+  nblast_results <- data.frame(scores=scores)
+  p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+  p
+})
+
+output$nblast_results_tracing_top10 <- renderTable({
+  query_neuron <- tracing()
+  scores <- nblast_scores_tracing()
+  if(is.null(scores)) return(NULL)
+  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10])
 })
 
 })
