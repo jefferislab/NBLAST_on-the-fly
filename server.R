@@ -121,24 +121,39 @@ output$nblast_results_all <- renderPlot({
 # User tracing #
 ################
 output$brain3d_tracing <- renderWebGL({
-  query_neuron <- input$tracing_file
+  query_neuron <- tracing()
   if(!is.null(query_neuron)) {
-    if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
-    else tracing_neuron <- read.neuron(query_neuron$datapath)
-    clear3d()
-    plot3d(tracing_neuron, col='red')
+    plot3d(transformed_tracing(), col='red')
   }
   plot3d(FCWB)
   frontalView()
 })
 
-output$nblast_results_tracing <- renderPlot({
+tracing <- reactive({
   query_neuron <- input$tracing_file
+  if(is.null(query_neuron)) return(NULL)
+  if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+  else tracing_neuron <- read.neuron(query_neuron$datapath)
+  tracing_neuron
+})
+
+transformed_tracing <- reactive({
+  template_brain <- input$brain
+  tracing_neuron <- tracing()
+  message(template_brain)
+  if(template_brain != "FCWB") {
+    template_brain <- get(template_brain)
+    tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+  }
+  tracing_neuron
+})
+
+output$nblast_results_tracing <- renderPlot({
+  query_neuron <- tracing()
   if(is.null(query_neuron)) {
     NULL
   } else {
-    if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
-    else tracing_neuron <- read.neuron(query_neuron$datapath)
+    tracing_neuron <- transformed_tracing()
     
     scores <- list()
     withProgress(session, min=1, max=10, expr={
