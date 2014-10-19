@@ -128,23 +128,22 @@ output$nblast_results_all_top10 <- renderTable({
 output$brain3d_tracing <- renderWebGL({
   query_neuron <- tracing()
   if(!is.null(query_neuron)) {
-    plot3d(transformed_tracing(), col='red')
+    plot3d(query_neuron, col='red')
   }
   plot3d(FCWB)
   frontalView()
 })
 
 tracing <- reactive({
+  template_brain <- input$brain
+  
+  isolate({
   query_neuron <- input$tracing_file
   if(is.null(query_neuron)) return(NULL)
   if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
   else tracing_neuron <- read.neuron(query_neuron$datapath)
-  tracing_neuron
-})
+  })
 
-transformed_tracing <- reactive({
-  template_brain <- input$brain
-  tracing_neuron <- tracing()
   message(template_brain)
   if(template_brain != "FCWB") {
     template_brain <- get(template_brain)
@@ -158,20 +157,18 @@ output$nblast_results_tracing <- renderPlot({
   if(is.null(query_neuron)) {
     NULL
   } else {
-    tracing_neuron <- transformed_tracing()
-    
     scores <- list()
     withProgress(session, min=1, max=10, expr={
       setProgress(message="NBLAST in progress", detail="This may take a few minutes")
       for(i in 1:10) {
         chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-        scores[[i]] <<- nblast(dotprops(tracing_neuron), dps[exemplars[chunk]])
+        scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
         setProgress(value=i)
       }
     })
     scores <- unlist(scores)
     
-    output$nblast_results_tracing_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(tracing_neuron), dotprops(tracing_neuron)), decreasing=TRUE)[1:10]) })
+    output$nblast_results_tracing_top10 <- renderTable({ data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10]) })
     nblast_results <- data.frame(scores=scores)
     p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
     p
