@@ -50,6 +50,12 @@ flycircuit_link <- function(gene_name) {
   url <- flycircuit_url(gene_name)
   paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
 }
+
+cluster_link <- function(gene_name) {
+  cluster <- apresdf[gene_name, 'cluster']
+  url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
+  paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
+}
   
 
 shinyServer(function(input, output, session) {
@@ -129,7 +135,7 @@ output$nblast_results_all <- renderPlot({
 output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
-  data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link))
+  data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
 }, sanitize.text.function = force)
 
 
@@ -191,7 +197,7 @@ output$nblast_results_tracing_top10 <- renderTable({
   query_neuron <- tracing()
   scores <- nblast_scores_tracing()
   if(is.null(scores)) return(NULL)
-  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link))
+  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link))
 }, sanitize.text.function = force)
 
 })
