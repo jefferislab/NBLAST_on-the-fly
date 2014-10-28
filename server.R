@@ -191,7 +191,7 @@ output$nblast_results_tracing_top10 <- renderTable({
   query_neuron <- tracing()
   scores <- nblast_scores_tracing()
   if(is.null(scores)) return(NULL)
-  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link))
+  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link))
 }, sanitize.text.function = force)
 
 })
