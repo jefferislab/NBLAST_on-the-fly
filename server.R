@@ -48,7 +48,7 @@ flycircuit_url <- function(gene_name) {
 
 flycircuit_link <- function(gene_name) {
   url <- flycircuit_url(gene_name)
-  paste0("<a href='", url, "'>View on FlyCircuit.tw</a>")
+  paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
 }
   
 
