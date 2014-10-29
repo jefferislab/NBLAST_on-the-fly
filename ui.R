@@ -86,6 +86,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         h2("NBLAST results"),
         h3("Top 10 hits"),
         tableOutput("nblast_results_all_top10"),
+        h3("Top 10 clusters"),
+        tableOutput("nblast_results_all_top10_clusters"),
         h3("Score distribution"),
         plotOutput("nblast_results_all")
       )
