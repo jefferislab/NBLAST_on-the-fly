@@ -172,6 +172,7 @@ output$brain3d_tracing <- renderWebGL({
 
 tracing <- reactive({
   template_brain <- input$brain
+  if(template_brain == 'Select a template brain') return(NULL)
   
   isolate({
   query_neuron <- input$tracing_file
