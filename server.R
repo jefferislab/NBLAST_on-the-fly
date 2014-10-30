@@ -180,6 +180,8 @@ tracing <- reactive({
   if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
   else tracing_neuron <- read.neuron(query_neuron$datapath)
   })
+  
+  tracing_neuron <- dotprops(tracing_neuron, resample=1)
 
   message(template_brain)
   if(template_brain != "FCWB") {
