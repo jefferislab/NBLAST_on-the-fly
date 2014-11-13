@@ -21,7 +21,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Select two FlyCircuit neurons to compare with NBLAST. The query neuron will be plotted in red in the 3D viewer to the right, while the target neuron will be drawn in blue.",
+        HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
         h3("Query:"),
         textInput.typeahead(
           id="query_one",
