@@ -41,18 +41,18 @@ environment(inRows) <- asNamespace('rgl')
 assignInNamespace('inRows', inRows, ns='rgl')
 
 # Functions for converting gene names to FlyCircuit.tw URLs and making links
-flycircuit_url <- function(gene_name) {
-  idid <- fc_idid(gene_name)
+flycircuit_url <- function(neuron_name) {
+  idid <- fc_idid(neuron_name)
   paste0("http://flycircuit.tw/modules.php?name=clearpage&op=detail_table&idid=", idid)
 }
 
-flycircuit_link <- function(gene_name) {
-  url <- flycircuit_url(gene_name)
+flycircuit_link <- function(neuron_name) {
+  url <- flycircuit_url(fc_gene_name(neuron_name))
   paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
 }
 
-cluster_link <- function(gene_name) {
-  cluster <- apresdf[gene_name, 'cluster']
+cluster_link <- function(neuron_name) {
+  cluster <- apresdf[fc_gene_name(neuron_name), 'cluster']
   url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
   paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
 }
@@ -101,7 +101,7 @@ output$brain3d_all <- renderWebGL({
     clear3d()
     plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2)
     scores <- sort(nblast_scores(), decreasing=TRUE)
-    plot3d(dps[names(scores[2:11])], col=rainbow(10))
+    plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10))
   }
   plot3d(FCWB)
   frontalView()
@@ -126,6 +126,7 @@ nblast_scores <- reactive({
     }
   })
   scores <- unlist(scores)
+  names(scores) <- fc_neuron(names(scores))
   scores
 })
 
@@ -147,9 +148,9 @@ output$nblast_results_all_top10_clusters <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
   scores <- sort(scores, decreasing=TRUE)
-  clusters <- apresdf[names(scores), 'cluster']
+  clusters <- apresdf[fc_gene_name(names(scores)), 'cluster']
   unique_clusters <- unique(clusters[-1])[1:10]
-  scores <- scores[names(scores) != fc_gene_name(query_neuron())]
+  scores <- scores[names(scores) != query_neuron()]
   names(unique_clusters) <- sapply(unique_clusters, function(x) names(scores[which(x == clusters)[1]]))
   clusters <- unique_clusters
     
