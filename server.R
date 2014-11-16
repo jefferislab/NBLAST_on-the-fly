@@ -165,7 +165,10 @@ output$nblast_results_all_top10_clusters <- renderTable({
 output$brain3d_tracing <- renderWebGL({
   query_neuron <- tracing()
   if(!is.null(query_neuron)) {
-    plot3d(query_neuron, col='red')
+    plot3d(query_neuron, col='black', lwd=2)
+    scores <- nblast_scores_tracing()
+    scores <- sort(scores, decreasing=TRUE)
+    plot3d(dps[names(scores)[1:10]])
   }
   plot3d(FCWB)
   frontalView()
