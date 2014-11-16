@@ -125,9 +125,9 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   
   tabPanel("About",
     mainPanel(
-      "This web app accompanies ", a("Costa et al. (2014) NBLAST: Rapid, sensitive comparison of neuronal structure and construction of neuron family databases", href="http://dx.doi.org/10.1101/006346"), " and acts as a demonstration of the core NBLAST algorithm (package ", a("nat.nblast,", href="https://github.com/jefferislab/nat.nblast"), "), along with some features of the ", a("NeuroAnatomy Toolbox", href="https://github.com/jefferis/nat"), " and its helper packages: ", a("nat.templatebrains", href="https://github.com/jefferislab/nat.templatebrains"), " and ", a("nat.flybrains.", href="https://github.com/jefferislab/nat.flybrains"),
+      HTML("This web app accompanies <a href='http://dx.doi.org/10.1101/006346'>Costa et al. (2014) NBLAST: Rapid, sensitive comparison of neuronal structure and construction of neuron family databases</a> and acts as a demonstration of the core NBLAST algorithm (package <a href='https://github.com/jefferislab/nat.nblast'>nat.nblast</a>), along with some features of the <a href='https://github.com/jefferis/nat'>NeuroAnatomy Toolbox</a> and its helper packages: <a href='https://github.com/jefferislab/nat.templatebrains'>nat.templatebrains</a> and <a href='https://github.com/jefferislab/nat.flybrains'>nat.flybrains</a>."),
       h2("Source code"),
-      "The full code for this web app can be downloaded from ", a("GitHub.",href="https://github.com/jefferislab/NBLAST_online")
+      HTML("The full code for this web app can be downloaded from <a href='https://github.com/jefferislab/NBLAST_online'>GitHub</a>.")
     )
   )
   
