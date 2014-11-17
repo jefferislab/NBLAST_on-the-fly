@@ -242,4 +242,20 @@ output$nblast_results_tracing_top10 <- renderTable({
   data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link))
 }, sanitize.text.function = force)
 
+output$nblast_results_tracing_download <- downloadHandler(
+  filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
+  content = function(file) {
+    scores <- nblast_scores_tracing()
+    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())))
+    colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
+    write.table(score_table, file, row.names=FALSE)
+  }
+)
+
+output$nblast_tracing_complete <- reactive({
+  scores <- nblast_scores_tracing()
+  return(ifelse(is.null(scores), FALSE, TRUE))
+})
+outputOptions(output, 'nblast_tracing_complete', suspendWhenHidden=FALSE)
+
 })
