@@ -138,6 +138,22 @@ output$nblast_results_all <- renderPlot({
   p
 })
 
+output$nblast_results_all_download <- downloadHandler(
+  filename = function() {  paste0(input$query_all, '_nblast_results_', Sys.Date(), '.csv') },
+  content = function(file) {
+    scores <- nblast_scores()
+    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
+    colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
+    write.table(score_table, file, row.names=FALSE)
+  }
+)
+
+output$nblast_all_complete <- reactive({
+  scores <- nblast_scores()
+  return(ifelse(is.null(scores), FALSE, TRUE))
+})
+outputOptions(output, 'nblast_all_complete', suspendWhenHidden=FALSE)
+
 output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
