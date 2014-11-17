@@ -8,8 +8,13 @@ library(shinysky)
 library(ggplot2)
 library(shinyIncubator)
 
+# For URL synching
+url_fields_to_sync <- c("query_one", "target_one", "query_all");
+
 # Load dps object for plotting neurons
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
+neuron_names <- fc_neuron(names(dps))
+neuron_ids <- fc_idid(names(dps))
 
 # Attach the all-by-all score matrix and load into memory
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
@@ -257,5 +262,63 @@ output$nblast_tracing_complete <- reactive({
   return(ifelse(is.null(scores), FALSE, TRUE))
 })
 outputOptions(output, 'nblast_tracing_complete', suspendWhenHidden=FALSE)
+
+
+
+######################
+# URL synching stuff #
+######################
+firstTime <- TRUE
+
+output$hash <- renderText(function() {
+  newHash = paste(collapse=";", Map(function(field) { paste(sep="=", field, input[[field]]) }, url_fields_to_sync))
+  # the VERY FIRST time we pass the input hash up.
+  return(
+    if (!firstTime) {
+      newHash
+    } else {
+      if (is.null(input$hash)) {
+        NULL
+      } else {
+        firstTime<<-F;
+        isolate(input$hash)
+      }
+    }
+  )
+})
+
+###
+
+# whenever your input values change, including the navbar and tabpanels, send
+# a message to the client to update the URL with the input variables.
+# setURL is defined in url_handler.js
+observe({
+#   reactlist <- reactiveValuesToList(input)
+  reactlist <- list(query_one="", target_one="", query_all="")
+  reactvals <- grep("^ss-|^shiny-", names(reactlist), value=TRUE, invert=TRUE) # strip shiny related URL parameters
+  reactstr <- lapply(reactlist[reactvals], as.character) # handle conversion of special data types
+  session$sendCustomMessage(type='setURL', reactstr)
+})
+
+observe({ # this observer executes once, when the page loads
+  data <- parseQueryString(session$clientData$url_search)
+  if (!is.null(data$page)) {
+    session$sendCustomMessage(type='setNavbar', data)
+  }
+  
+  if(!is.null(data$query_one)) updateTextInput(session, 'query_one', value=data$query_one)
+
+  if(!is.null(data$target_one)) updateTextInput.typeahead(
+      session,
+      id="target_one",
+      placeholder=data$target_one,
+      dataset=data.frame(name=neuron_names, id=neuron_ids),
+      valueKey = "name",
+      tokens=neuron_ids,
+      template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
+    )
+  
+  if(!is.null(data$brain)) updateSelectInput(session, 'brain', selected=data$brain)
+})
 
 })

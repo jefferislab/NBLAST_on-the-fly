@@ -13,24 +13,32 @@ dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9
 neuron_names <- fc_neuron(names(dps))
 neuron_ids <- fc_idid(names(dps))
 
-shinyUI(navbarPage("NBLAST on-the-fly",
+# For URL data synching
+hashProxy <- function(inputoutputID) {
+  div(id=inputoutputID,class=inputoutputID,tag("div",""));
+}
+
+shinyUI(navbarPage("NBLAST on-the-fly",  
   #######################
   # Pairwise comparison #
   #######################
   tabPanel("Pairwise comparison",
     sidebarLayout(  
       sidebarPanel(
+        includeHTML('url_handler.js'),
+        hashProxy("hash"),
         h3("Instructions"),
         HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
         h3("Query:"),
-        textInput.typeahead(
-          id="query_one",
-          placeholder="Type a FlyCircuit neuron name",
-          local=data.frame(name=neuron_names, id=neuron_ids),
-          valueKey = "name",
-          tokens=neuron_ids,
-          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-        ),
+#         textInput.typeahead(
+#           id="query_one",
+#           placeholder="Type a FlyCircuit neuron name",
+#           local=data.frame(name=neuron_names, id=neuron_ids),
+#           valueKey = "name",
+#           tokens=neuron_ids,
+#           template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
+#         ),
+        textInput("query_one", label=""),
         
         h3("Target:"),
         textInput.typeahead(
