@@ -63,7 +63,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from red = best to violet = worst).",
+        "Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from red = best to violet = worst).",
         h3("Query:"),
         textInput.typeahead(
           id="query_all",
@@ -74,6 +74,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
           template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
         ),
         br(),
+        br(),
+        checkboxInput('use_mean', label="Use mean scores", value=FALSE),
         br(),
         submitButton("NBLAST")
       ),

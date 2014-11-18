@@ -121,7 +121,11 @@ nblast_scores <- reactive({
     setProgress(message="NBLAST in progress")
     for(i in 1:10) {
       chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-      scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
+      if(!input$use_mean) {
+        scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
+      } else {
+        scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall, normalisation='mean')
+      }
       setProgress(value=i)
     }
   })
@@ -157,7 +161,11 @@ outputOptions(output, 'nblast_all_complete', suspendWhenHidden=FALSE)
 output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
-  data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+  if(!input$use_mean) {
+    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+  } else {
+    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+  }
 }, sanitize.text.function = force)
 
 output$nblast_results_all_top10_clusters <- renderTable({
