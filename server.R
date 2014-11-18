@@ -308,17 +308,9 @@ observe({ # this observer executes once, when the page loads
   
   if(!is.null(data$query_one)) updateTextInput(session, 'query_one', value=data$query_one)
 
-  if(!is.null(data$target_one)) updateTextInput.typeahead(
-      session,
-      id="target_one",
-      placeholder=data$target_one,
-      dataset=data.frame(name=neuron_names, id=neuron_ids),
-      valueKey = "name",
-      tokens=neuron_ids,
-      template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-    )
+  if(!is.null(data$target_one)) updateTextInput(session, 'target_one', value=data$target_one)
   
-  if(!is.null(data$brain)) updateSelectInput(session, 'brain', selected=data$brain)
+  if(!is.null(data$query_all)) updateTextInput(session, 'query_all', value=data$query_all)
 })
 
 })
