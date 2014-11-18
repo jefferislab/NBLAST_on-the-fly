@@ -14,6 +14,9 @@ dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9
 # Attach the all-by-all score matrix and load into memory
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
 
+# Load VFB ID lookup table
+vfb_ids <- read.table("http://www.virtualflybrain.org/public_resources/fc_name_mapping.csv", sep=",", header=TRUE)
+
 # Load the affinity propagation results
 apres16k.p0 <- load_fcdata("apres16k.p0")
 apresdf <- as.data.frame(apres16k.p0)
@@ -51,6 +54,16 @@ flycircuit_link <- function(neuron_name) {
   paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
 }
 
+vfb_url <- function(neuron_name) {
+  vfb_id <- vfb_ids[vfb_ids$Name == neuron_name, 'vfbid']
+  paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
+}
+
+vfb_link <- function(neuron_name) {
+  url <- vfb_url(neuron_name)
+  paste0("<a target='_blank' href='", url, "'>View in VFB stack browser</a>")
+}
+
 cluster_link <- function(neuron_name) {
   cluster <- apresdf[fc_gene_name(neuron_name), 'cluster']
   url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
@@ -61,6 +74,7 @@ link_cluster <- function(cluster) {
   url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
   paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
 }
+
   
 
 shinyServer(function(input, output, session) {
@@ -162,9 +176,9 @@ output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
   if(!input$use_mean) {
-    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[2:11]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
   } else {
-    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[2:11]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
   }
 }, sanitize.text.function = force)
 
@@ -252,7 +266,7 @@ output$nblast_results_tracing_top10 <- renderTable({
   scores <- nblast_scores_tracing()
   if(is.null(scores)) return(NULL)
   names(scores) <- fc_neuron(names(scores))
-  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link))
+  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link))
 }, sanitize.text.function = force)
 
 output$nblast_results_tracing_download <- downloadHandler(
