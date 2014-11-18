@@ -105,10 +105,13 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Upload a tracing to compare against all FlyCircuit cluster examplars, using NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
+        "Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
         h3("Query"),
         fileInput('tracing_file', "Your tracing:"),
         selectInput('brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
+        br(),
+        checkboxInput('all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
+        br(),
         submitButton("NBLAST")
       ),
       

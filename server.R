@@ -218,8 +218,13 @@ nblast_scores_tracing <- reactive({
   withProgress(session, min=1, max=10, expr={
     setProgress(message="NBLAST in progress", detail="This may take a few minutes")
     for(i in 1:10) {
-      chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-      scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
+      if(!input$all_neurons) {
+        chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
+        scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
+      } else {
+        chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
+        scores[[i]] <<- nblast(dotprops(query_neuron), dps[chunk])
+      }
       setProgress(value=i)
     }
   })
