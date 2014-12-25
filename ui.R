@@ -63,7 +63,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from red = best to violet = worst).",
+        HTML("Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
         h3("Query:"),
         textInput.typeahead(
           id="query_all",
@@ -107,7 +107,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
-        "Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be plotted in black in the 3D viewer to the right, alongside the top 10 hits.",
+        HTML("Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
         h3("Query"),
         fileInput('tracing_file', "Your tracing:"),
         selectInput('brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
