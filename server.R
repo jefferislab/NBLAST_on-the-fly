@@ -28,6 +28,14 @@ frontalView<-function(zoom=0.6){
   rgl.viewpoint(userMatrix=um,zoom=zoom)
 }
 
+# Overwrite the normal FCWB surface with our downsampled one
+FCWB.surf <- read.hxsurf("FCWB.smooth.surf")
+# We need to overwrite the function from nat.templatebrains as otherwise this will pick the surface from the package
+plot3d.templatebrain <- function(x, col='grey', alpha=0.3, ...) {
+  plot3d(get(paste0(deparse(substitute(x)), ".surf")), col=col, alpha=alpha, ...)
+}
+
+
 # Overwrite RGL's inRows function to reduce the number of digits from 7 to 5
 inRows <- function(values, perrow, leadin="\t", digits=5) {
   if (is.matrix(values)) values <- t(values)
