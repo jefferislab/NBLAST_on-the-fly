@@ -32,7 +32,10 @@ frontalView<-function(zoom=0.6){
 FCWB.surf <- read.hxsurf("FCWB.smooth.surf")
 # We need to overwrite the function from nat.templatebrains as otherwise this will pick the surface from the package
 plot3d.templatebrain <- function(x, col='grey', alpha=0.3, ...) {
-  plot3d(get(paste0(deparse(substitute(x)), ".surf")), col=col, alpha=alpha, ...)
+  surface <- get(paste0(deparse(substitute(x)), ".surf"))
+  mesh <- as.mesh3d(surface)
+  mesh <- addNormals(mesh)
+  shade3d(mesh, color=col, alpha=alpha, ...)
 }
 
 
