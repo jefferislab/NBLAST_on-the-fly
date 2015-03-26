@@ -50,7 +50,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         h2("3D view"),
         webGLOutput("brain3d_one", width="800px", height="600px"),
         h2("NBLAST results"),
-        textOutput("nblast_results_one")
+        textOutput("nblast_results_one"),
+        HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
       )
     )
   ),
@@ -86,6 +87,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         h2("3D view"),
         webGLOutput("brain3d_all", width="800px", height="600px"),
         h2("NBLAST results"),
+        HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
         conditionalPanel(condition = "output.nblast_all_complete",
           downloadButton('nblast_results_all_download', 'Download all scores as CSV')
         ),
@@ -123,6 +125,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         h2("3D view"),
         webGLOutput("brain3d_tracing", width="800px", height="600px"),
         h2("NBLAST results"),
+        HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
         conditionalPanel(condition = "output.nblast_tracing_complete",
           downloadButton('nblast_results_tracing_download', 'Download all scores as CSV')
         ),
