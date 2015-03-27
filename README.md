@@ -49,6 +49,6 @@ library(shiny)
 runGitHub("jefferislab/NBLAST_on-the-fly")
 ```
 ## Setting up a server
-If you want to set up a server of your own, besides R and and the packages already mentioned you will need to instally shiny server. There is a free, open source shiny server edition. Detailed instructions for different linux platforms are here:
+If you want to set up a server of your own, perhaps to provide access to a new dataset, besides R and and the packages already mentioned you will need to instally shiny server. There is a free, open source shiny server edition. Detailed instructions for different linux platforms are here:
 
 http://www.rstudio.com/products/shiny/download-server/
