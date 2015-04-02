@@ -32,7 +32,7 @@ You will also need to download our processed/registered version of the
 [flycircuit.tw](http://flycircuit.tw) dataset. The flycircuit package will 
 enable you to do this. Note that the data will be installed in a default location
 within the home folder of the current user; therefore you must download the data
-while running as user that will be used to run they shiny app.
+while running as the user that will be used to run the shiny app.
 
 ```r
 library(flycircuit)
