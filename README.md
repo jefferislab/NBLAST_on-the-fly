@@ -26,7 +26,6 @@ install.packages(c("shiny","ggplot2"))
 
 install_github("trestletech/shinyRGL",)
 install_github("AnalytixWare/ShinySky")
-install_github("rstudio/shiny-incubator")
 ```
 ### Data
 You will also need to download our processed/registered version of the 
