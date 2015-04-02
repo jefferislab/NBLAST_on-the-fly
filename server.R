@@ -6,7 +6,6 @@ library(shiny)
 library(shinyRGL)
 library(shinysky)
 library(ggplot2)
-library(shinyIncubator)
 
 # Load dps object for plotting neurons
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
@@ -139,14 +138,13 @@ nblast_scores <- reactive({
   query_neuron <- query_neuron()
   if(query_neuron == "") return(NULL)
   scores <- list()
-  withProgress(session, min=1, max=10, expr={
-    setProgress(message="NBLAST in progress")
+  withProgress(min=1, max=10, message="NBLAST in progress", expr={
     for(i in 1:10) {
       chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
       if(!input$use_mean) {
-        scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
+        scores[[i]] <- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
       } else {
-        scores[[i]] <<- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall, normalisation='mean')
+        scores[[i]] <- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall, normalisation='mean')
       }
       setProgress(value=i)
     }
@@ -245,15 +243,14 @@ nblast_scores_tracing <- reactive({
   query_neuron <- tracing()
   if(is.null(query_neuron)) return(NULL)
   scores <- list()
-  withProgress(session, min=1, max=10, expr={
-    setProgress(message="NBLAST in progress", detail="This may take a few minutes")
+withProgress(min=1, max=10, message="NBLAST in progress", detail="This may take a few minutes", expr={
     for(i in 1:10) {
       if(!input$all_neurons) {
         chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-        scores[[i]] <<- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
+        scores[[i]] <- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
       } else {
         chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-        scores[[i]] <<- nblast(dotprops(query_neuron), dps[chunk])
+        scores[[i]] <- nblast(dotprops(query_neuron), dps[chunk])
       }
       setProgress(value=i)
     }
