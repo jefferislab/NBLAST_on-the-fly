@@ -5,6 +5,7 @@ This project provides a simple interactive demonstration of the [NBLAST](http://
 
 A live demo of this application is running at <http://jefferislab.org/si/nblast/on-the-fly/>
 ## Running locally
+You can actually run the nblast server on your own machine with relatively little effort. Instructions follow or watch the [video run-through](https://www.youtube.com/watch?v=cCDql94lSwI).
 
 ### Pre-requsisites
 
