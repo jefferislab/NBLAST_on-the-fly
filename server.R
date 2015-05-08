@@ -280,7 +280,7 @@ output$nblast_results_tracing_download <- downloadHandler(
     scores <- nblast_scores_tracing()
     score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())))
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
-    write.table(score_table, file, row.names=FALSE)
+    write.csv(score_table, file, row.names=FALSE)
   }
 )
 
