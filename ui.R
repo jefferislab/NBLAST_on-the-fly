@@ -13,50 +13,7 @@ neuron_names <- fc_neuron(names(dps))
 neuron_ids <- fc_idid(names(dps))
 
 shinyUI(navbarPage("NBLAST on-the-fly",
-  #######################
-  # Pairwise comparison #
-  #######################
-  tabPanel("Pairwise comparison",
-    sidebarLayout(  
-      sidebarPanel(
-        h3("Instructions"),
-        HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
-        h3("Query:"),
-        textInput.typeahead(
-          id="query_one",
-          placeholder="Type a FlyCircuit neuron name",
-          local=data.frame(name=neuron_names, id=neuron_ids),
-          valueKey = "name",
-          tokens=neuron_ids,
-          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-        ),
-        
-        h3("Target:"),
-        textInput.typeahead(
-          id="target_one",
-          placeholder="Type a FlyCircuit neuron name",
-          local=data.frame(name=neuron_names, id=neuron_ids),
-          valueKey = "name",
-          tokens=neuron_ids,
-          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-        ),
-        br(),
-        br(),
-        submitButton("NBLAST")
-      ),
-      
-      mainPanel(
-        h2("3D view"),
-        webGLOutput("brain3d_one", width="800px", height="600px"),
-        h2("NBLAST results"),
-        textOutput("nblast_results_one"),
-        HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
-      )
-    )
-  ),
-  
-  
-  ###################
+    ###################
   # One against all #
   ###################
   tabPanel("One against all",
@@ -95,6 +52,49 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         tableOutput("nblast_results_all_top10_clusters"),
         h3("Score distribution"),
         plotOutput("nblast_results_all")
+      )
+    )
+  ),
+  
+  
+  #######################
+  # Pairwise comparison #
+  #######################
+  tabPanel("Pairwise comparison",
+    sidebarLayout(  
+      sidebarPanel(
+        h3("Instructions"),
+        HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
+        h3("Query:"),
+        textInput.typeahead(
+          id="query_one",
+          placeholder="Type a FlyCircuit neuron name",
+          local=data.frame(name=neuron_names, id=neuron_ids),
+          valueKey = "name",
+          tokens=neuron_ids,
+          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
+        ),
+        
+        h3("Target:"),
+        textInput.typeahead(
+          id="target_one",
+          placeholder="Type a FlyCircuit neuron name",
+          local=data.frame(name=neuron_names, id=neuron_ids),
+          valueKey = "name",
+          tokens=neuron_ids,
+          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
+        ),
+        br(),
+        br(),
+        submitButton("NBLAST")
+      ),
+      
+      mainPanel(
+        h2("3D view"),
+        webGLOutput("brain3d_one", width="800px", height="600px"),
+        h2("NBLAST results"),
+        textOutput("nblast_results_one"),
+        HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
       )
     )
   ),
