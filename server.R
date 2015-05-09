@@ -168,7 +168,7 @@ output$nblast_results_all_download <- downloadHandler(
     scores <- nblast_scores()
     score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
-    write.table(score_table, file, row.names=FALSE)
+    write.csv(score_table, file, row.names=FALSE)
   }
 )
 
