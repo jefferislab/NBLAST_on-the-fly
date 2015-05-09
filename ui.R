@@ -138,7 +138,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     mainPanel(
       HTML("This web app accompanies <a href='http://dx.doi.org/10.1101/006346'>Costa et al. (2014) NBLAST: Rapid, sensitive comparison of neuronal structure and construction of neuron family databases</a>. More information on other NBLAST resources is available <a href='http://jefferislab.org/si/nblast'>here</a>. NBLAST on-the-fly acts as a demonstration of the core NBLAST algorithm (package <a href='https://github.com/jefferislab/nat.nblast'>nat.nblast</a>), along with some features of the <a href='https://github.com/jefferis/nat'>NeuroAnatomy Toolbox</a> and its helper packages: <a href='https://github.com/jefferislab/nat.templatebrains'>nat.templatebrains</a> and <a href='https://github.com/jefferislab/nat.flybrains'>nat.flybrains</a>. Other resources available are listed <a href='http://jefferislab.org/si/nblast/www/'>here</a>."),
       h3("Local installation"),
-      HTML("Instructions on how to install this app locally are <a href='https://github.com/jefferislab/NBLAST_on-the-fly'>here</a>, and a video demo <a href='http://jefferislab.org/si/nblast/www/demos/#nblast-online'>here</a>.")
+      HTML("Instructions on how to install this app locally are <a href='https://github.com/jefferislab/NBLAST_on-the-fly'>here</a>, and a video demo <a href='http://jefferislab.org/si/nblast/www/demos/#nblast-online'>here</a>."),
       h3("Video demos"),
       HTML("Video demos showing how to use this web app and other related resources are available <a href='http://jefferislab.org/si/nblast/www/demos/'>here</a>."),
       h3("Source code"),
