@@ -48,6 +48,21 @@ apres16k.p0=load_si_data("apres16k.p0.rds")
 library(shiny)
 runGitHub("jefferislab/NBLAST_on-the-fly")
 ```
+
+If you want to hack NBLAST_on-the-fly: 
+
+1. git clone the repository. 
+2. Use RStudio to edit the code (recommended)
+3. Run the shiny app with runApp
+
+```r
+setwd("/path/to/NBLAST_on-the-fly")
+library(shiny)
+runApp()
+```
+
+You will need to run the app in browser such as Chrome that supports WebGL 
+rather than in the RStudio browswer if you want to see the 3D content.
 ## Setting up a server
 If you want to set up a server of your own, perhaps to provide access to a new dataset, besides R and and the packages already mentioned you will need to install shiny server. There is a free, open source shiny server edition. Detailed instructions for different linux platforms are here:
 
