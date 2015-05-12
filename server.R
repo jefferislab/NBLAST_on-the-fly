@@ -82,7 +82,21 @@ link_cluster <- function(cluster) {
   paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
 }
 
+## Annotation data
+library(flycircuit)
+
+type_for_neuron<-function(n) {
+  gns=fc_gene_name(n)
+  subset(annotation)
+  tdf=subset(annotation, annotation_class=='NeuronType')
+  tdf$gene_name=fc_gene_name(tdf$neuron_idid)
   
+  
+  ntypes=rep("",length(dps))
+  names(ntypes)=names(dps)
+  ntypes[tdf$gene_name]=tdf$text
+  ntypes[gns]
+}
 
 shinyServer(function(input, output, session) {
 
