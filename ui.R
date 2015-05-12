@@ -40,7 +40,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       mainPanel(
         HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
         h2("3D view"),
-        webGLOutput("brain3d_all", width="800px", height="600px"),
+        webGLOutput("brain3d_all", width="800px", height="800px"),
         h2("NBLAST results"),
         HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
         conditionalPanel(condition = "output.nblast_all_complete",
@@ -91,7 +91,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       
       mainPanel(
         h2("3D view"),
-        webGLOutput("brain3d_one", width="800px", height="600px"),
+        webGLOutput("brain3d_one", width="800px", height="800px"),
         h2("NBLAST results"),
         textOutput("nblast_results_one"),
         HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
@@ -120,7 +120,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
       mainPanel(
         HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
         h2("3D view"),
-        webGLOutput("brain3d_tracing", width="800px", height="600px"),
+        webGLOutput("brain3d_tracing", width="800px", height="800px"),
         h2("NBLAST results"),
         HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
         conditionalPanel(condition = "output.nblast_tracing_complete",
