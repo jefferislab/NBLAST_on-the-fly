@@ -25,7 +25,7 @@ install_github("jefferis/flycircuit", dependencies=TRUE)
 install_github("jefferislab/nat.flybrains", dependencies=TRUE)
 install.packages(c("shiny","ggplot2"))
 
-install_github("trestletech/shinyRGL",)
+install_github("trestletech/shinyRGL")
 install_github("AnalytixWare/ShinySky")
 ```
 ### Data
