@@ -197,7 +197,12 @@ output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
   if(!input$use_mean) {
-    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[2:11]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
+    data.frame(scores=sort(scores, decreasing=TRUE)[2:11], 
+               normalised_scores=sort(scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall), decreasing=TRUE)[2:11],
+               flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), 
+               vfb=sapply(names(sort(scores, decreasing=TRUE)[2:11]), vfb_link), 
+               cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link),
+               type=type_for_neuron(names(sort(scores, decreasing=TRUE)[2:11])))
   } else {
     data.frame(scores=sort(scores, decreasing=TRUE)[2:11], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[2:11]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[2:11]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[2:11]), cluster_link))
   }
