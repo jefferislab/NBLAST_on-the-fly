@@ -180,7 +180,9 @@ output$nblast_results_all_download <- downloadHandler(
   filename = function() {  paste0(input$query_all, '_nblast_results_', Sys.Date(), '.csv') },
   content = function(file) {
     scores <- nblast_scores()
-    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
+    score_table <- data.frame(neuron=names(scores), 
+                              raw=scores, 
+                              norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
     score_table$type=type_for_neuron(score_table$neuron)
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score", "Neuron Type")
     write.csv(score_table, file, row.names=FALSE)
@@ -223,7 +225,9 @@ output$nblast_results_all_top10_clusters <- renderTable({
   names(unique_clusters) <- sapply(unique_clusters, function(x) names(scores[which(x == clusters)[1]]))
   clusters <- unique_clusters
     
-  data.frame(cluster=sapply(clusters[1:10], link_cluster), scores=scores[names(clusters)[1:10]], normalised_scores=scores[names(clusters)[1:10]]/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
+  data.frame(cluster=sapply(clusters[1:10], link_cluster), 
+             scores=scores[names(clusters)[1:10]], 
+             normalised_scores=scores[names(clusters)[1:10]]/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
 }, sanitize.text.function = force, include.rownames=FALSE)
 
 
@@ -296,7 +300,12 @@ output$nblast_results_tracing_top10 <- renderTable({
   scores <- nblast_scores_tracing()
   if(is.null(scores)) return(NULL)
   names(scores) <- fc_neuron(names(scores))
-  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), type_for_neuron))
+  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], 
+             normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10],
+             flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), 
+             vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), 
+             cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), 
+             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), type_for_neuron))
 }, sanitize.text.function = force)
 
 output$nblast_results_tracing_download <- downloadHandler(
