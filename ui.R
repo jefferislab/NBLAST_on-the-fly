@@ -28,7 +28,7 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         ################
         # URL synching #
         ################
-        includeHTML("URL.js"),
+        includeHTML("url.js"),
         hashProxy("hash"),
         
         h3("Instructions"),
