@@ -137,6 +137,7 @@ output$brain3d_all <- renderWebGL({
 
 query_neuron <- reactive({
   query_neuron <- input$query_all
+  if(!nzchar(query_neuron)) return("")
   if(query_neuron == "") return("")
   query_neuron
 })

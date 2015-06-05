@@ -20,16 +20,20 @@ shinyUI(navbarPage("NBLAST on-the-fly",
     sidebarLayout(  
       sidebarPanel(
         h3("Instructions"),
+        includeHTML("awesomplete.js"),
+        includeCSS("awesomplete.css"),
         HTML("Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
         h3("Query:"),
-        textInput.typeahead(
-          id="query_all",
-          placeholder="Type a FlyCircuit neuron name",
-          local=data.frame(name=neuron_names, id=neuron_ids),
-          valueKey = "name",
-          tokens=neuron_ids,
-          template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-        ),
+        HTML('<input id="query_all" type="text" value="" class="awesomplete" data-list="fru-M-200266, bar, apple" data-minchars="1" />'),
+        # textInput("query_all", "", ""),
+#         textInput.typeahead(
+#           id="query_all",
+#           placeholder="Type a FlyCircuit neuron name",
+#           local=data.frame(name=neuron_names, id=neuron_ids),
+#           valueKey = "name",
+#           tokens=neuron_ids,
+#           template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
+#         ),
         br(),
         br(),
         checkboxInput('use_mean', label="Use mean scores", value=FALSE),
