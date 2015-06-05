@@ -175,6 +175,7 @@ output$brain3d_all <- renderWebGL({
 query_neuron <- reactive({
   query_neuron <- input$query_all
   if(query_neuron == "") return("")
+  if(!fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
   query_neuron
 })
 
