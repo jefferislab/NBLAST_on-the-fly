@@ -82,10 +82,8 @@ library(flycircuit)
 
 type_for_neuron<-function(n) {
   gns=fc_gene_name(n)
-  subset(annotation)
-  tdf=subset(annotation, annotation_class=='NeuronType')
+  tdf=annotation[annotation$annotation_class=='NeuronType',]
   tdf$gene_name=fc_gene_name(tdf$neuron_idid)
-  
   
   ntypes=rep("",length(dps))
   names(ntypes)=names(dps)
