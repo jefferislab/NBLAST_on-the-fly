@@ -310,14 +310,14 @@ output$nblast_results_tracing_top10 <- renderTable({
              flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), 
              vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), 
              cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), 
-             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), type_for_neuron))
+             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), function(x) link_for_neuron_type(type_for_neuron(x))))
 }, sanitize.text.function = force)
 
 output$nblast_results_tracing_download <- downloadHandler(
   filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
   content = function(file) {
     scores <- nblast_scores_tracing()
-    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), type_for_neuron))
+    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), function(x) paste0(type_for_neuron(x), collapse=", ")))
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
     write.csv(score_table, file, row.names=FALSE)
   }
