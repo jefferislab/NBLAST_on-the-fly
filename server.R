@@ -163,25 +163,28 @@ output$nblast_results_one <- renderText({
 output$brain3d_all <- renderWebGL({
   query_neuron <- query_neuron()
   if(nzchar(query_neuron)) {
+    if(fc_gene_name(query_neuron) %in% names(dps)) {
     clear3d()
     plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2)
     scores <- sort(nblast_scores(), decreasing=TRUE)
     plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10))
+    }
   }
   plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
+  if(query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 })
 
 query_neuron <- reactive({
   query_neuron <- input$query_all
   if(query_neuron == "") return("")
-  if(!fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
   query_neuron
 })
 
 nblast_scores <- reactive({
   query_neuron <- query_neuron()
   if(query_neuron == "") return(NULL)
+  if(!fc_gene_name(query_neuron) %in% names(dps)) return(NULL)
   scores <- list()
   withProgress(min=1, max=10, message="NBLAST in progress", expr={
     for(i in 1:10) {

@@ -31,6 +31,13 @@ shinyUI(navbarPage("NBLAST on-the-fly",
         includeHTML("url.js"),
         hashProxy("hash"),
         
+        
+        ###################
+        # Loading spinner #
+        ###################
+        includeCSS("loader.css"),
+        HTML("<div class='loader' style='position: absolute; left: 940px; top: 300px; z-index: -10000;'>Loading...</div>"),
+        
         h3("Instructions"),
         HTML("Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
         h3("Query:"),
@@ -68,6 +75,12 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   tabPanel("Pairwise comparison",
     sidebarLayout(  
       sidebarPanel(
+        ###################
+        # Loading spinner #
+        ###################
+        includeCSS("loader.css"),
+        HTML("<div class='loader' style='position: absolute; left: 940px; top: 300px; z-index: -10000;'>Loading...</div>"),
+        
         h3("Instructions"),
         HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
         h3("Query:"),
@@ -111,6 +124,12 @@ shinyUI(navbarPage("NBLAST on-the-fly",
   tabPanel("Upload a tracing",
     sidebarLayout(  
       sidebarPanel(
+        ###################
+        # Loading spinner #
+        ###################
+        includeCSS("loader.css"),
+        HTML("<div class='loader' style='position: absolute; left: 940px; top: 300px; z-index: -10000;'>Loading...</div>"),
+        
         h3("Instructions"),
         HTML("Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
         h3("Query"),
