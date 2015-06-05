@@ -8,6 +8,9 @@ library(shinysky)
 library(ggplot2)
 library(downloader)
 
+# URL synching
+url_fields_to_sync <- c("query_all")
+
 # Load dps object for plotting neurons
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
 
@@ -104,6 +107,29 @@ link_for_neuron_type <- function(type) {
 
 shinyServer(function(input, output, session) {
 
+################
+# URL synching #
+################
+firstTime <- TRUE
+output$hash <- reactiveText(function() {
+  newHash <- paste(collapse=",", Map(function(field) {
+                    paste(sep="=", field, input[[field]])
+                  },
+                  url_fields_to_sync))
+  return(
+    if (!firstTime) {
+      newHash
+    } else {
+      if (is.null(input$hash)) {
+        NULL
+      } else {
+        firstTime <<- FALSE;
+        isolate(input$hash)
+      }
+    }
+  )
+})
+  
 #######################
 # Pairwise comparison #
 #######################
@@ -149,6 +175,7 @@ output$brain3d_all <- renderWebGL({
 query_neuron <- reactive({
   query_neuron <- input$query_all
   if(query_neuron == "") return("")
+  if(!fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
   query_neuron
 })
 
