@@ -84,7 +84,7 @@ link_cluster <- function(cluster) {
 }
 
 ## Annotation data
-tdf <- annotation[annotation$annotation_class=='NeuronType', ]
+tdf <- annotation[annotation$annotation_class%in%c('NeuronType','ALGlomerulus'), ]
 tdf$gene_name <- fc_gene_name(tdf$neuron_idid)
 
 type_for_neuron<-function(n) {
