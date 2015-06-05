@@ -6,6 +6,7 @@ library(shiny)
 library(shinyRGL)
 library(shinysky)
 library(ggplot2)
+library(downloader)
 
 # Load dps object for plotting neurons
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
@@ -15,6 +16,11 @@ allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35
 
 # Load VFB ID lookup table
 vfb_ids <- read.table("http://www.virtualflybrain.org/public_resources/fc_name_mapping.csv", sep=",", header=TRUE)
+
+# Load VFB annotation ID lookup table
+vfb_annotations_download <- tempfile()
+download("https://raw.githubusercontent.com/VirtualFlyBrain/VFB_owl/master/doc/annotation_map.tsv", vfb_annotations_download)
+vfb_annotations <- read.table(vfb_annotations_download, header=TRUE, sep="\t")
 
 # Load the affinity propagation results
 apres16k.p0 <- load_fcdata("apres16k.p0")
@@ -78,17 +84,22 @@ link_cluster <- function(cluster) {
 }
 
 ## Annotation data
-library(flycircuit)
+tdf <- annotation[annotation$annotation_class%in%c('NeuronType','ALGlomerulus'), ]
+tdf$gene_name <- fc_gene_name(tdf$neuron_idid)
 
 type_for_neuron<-function(n) {
   gns=fc_gene_name(n)
-  tdf=annotation[annotation$annotation_class=='NeuronType',]
-  tdf$gene_name=fc_gene_name(tdf$neuron_idid)
-  
-  ntypes=rep("",length(dps))
-  names(ntypes)=names(dps)
-  ntypes[tdf$gene_name]=tdf$text
-  ntypes[gns]
+  tdf[tdf$gene_name == gns, 'text']
+}
+
+link_for_neuron_type <- function(type) {
+  links <- sapply(type, function(x) {
+    ffbt <- vfb_annotations[vfb_annotations$a.text == x, 'class_id']
+    url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
+    link <- ifelse(length(ffbt) == 0, paste0("<span style='color: black;'>", x, "</span>"), paste0("<a target='_blank' href='", url, "'>", x, "</a>"))
+    link
+  })
+  paste0(links, collapse="<span style='color: black;'>, </span>")
 }
 
 shinyServer(function(input, output, session) {
@@ -176,7 +187,7 @@ output$nblast_results_all_download <- downloadHandler(
     score_table <- data.frame(neuron=names(scores), 
                               raw=scores, 
                               norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
-    score_table$type=type_for_neuron(score_table$neuron)
+    score_table$type=sapply(score_table$neuron, function(x) paste0(type_for_neuron(x), collapse=", "))
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score", "Neuron Type")
     write.csv(score_table, file, row.names=FALSE)
   }
@@ -199,7 +210,7 @@ output$nblast_results_all_top10 <- renderTable({
                  flycircuit=sapply(top10n, flycircuit_link), 
                  vfb=sapply(top10n, vfb_link), 
                  cluster=sapply(top10n, cluster_link),
-                 type=type_for_neuron(top10n))
+                 type=sapply(top10n, function(x) link_for_neuron_type(type_for_neuron(x))))
   if(!input$use_mean) {
     sdf
   } else {
@@ -299,14 +310,14 @@ output$nblast_results_tracing_top10 <- renderTable({
              flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), 
              vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), 
              cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), 
-             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), type_for_neuron))
+             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), function(x) link_for_neuron_type(type_for_neuron(x))))
 }, sanitize.text.function = force)
 
 output$nblast_results_tracing_download <- downloadHandler(
   filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
   content = function(file) {
     scores <- nblast_scores_tracing()
-    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), type_for_neuron))
+    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), function(x) paste0(type_for_neuron(x), collapse=", ")))
     colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
     write.csv(score_table, file, row.names=FALSE)
   }
