@@ -217,10 +217,11 @@ output$nblast_results_all_top10_clusters <- renderTable({
   scores <- scores[names(scores) != query_neuron()]
   names(unique_clusters) <- sapply(unique_clusters, function(x) names(scores[which(x == clusters)[1]]))
   clusters <- unique_clusters
-    
+  query_gn=fc_gene_name(query_neuron())
+  self_score=fc_nblast(query_gn, query_gn, scoremat=allbyall)[1]
   data.frame(cluster=sapply(clusters[1:10], link_cluster), 
              scores=scores[names(clusters)[1:10]], 
-             normalised_scores=scores[names(clusters)[1:10]]/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
+             normalised_scores=scores[names(clusters)[1:10]]/self_score)
 }, sanitize.text.function = force, include.rownames=FALSE)
 
 
