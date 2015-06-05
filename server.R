@@ -27,13 +27,8 @@ frontalView<-function(zoom=0.6){
   rgl.viewpoint(userMatrix=um,zoom=zoom)
 }
 
-# Overwrite the normal FCWB surface with our downsampled one
+# We will use this downsampled FCWB surface instead of the normal one
 FCWB.surf <- read.hxsurf("FCWB.smooth.surf")
-# We need to overwrite the function from nat.templatebrains as otherwise this will pick the surface from the package
-plot3d.templatebrain <- function(x, col='grey', alpha=0.3, ...) {
-  plot3d(get(paste0(deparse(substitute(x)), ".surf")), col=col, alpha=alpha, ...)
-}
-
 
 # Overwrite RGL's inRows function to reduce the number of digits from 7 to 5
 inRows <- function(values, perrow, leadin="\t", digits=5) {
@@ -111,7 +106,7 @@ output$brain3d_one <- renderWebGL({
     plot3d(dps[fc_gene_name(query_neuron)], col='red')
     plot3d(dps[fc_gene_name(target_neuron)], col='blue')
   }
-  plot3d(FCWB)
+  plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
 })
 
@@ -138,7 +133,7 @@ output$brain3d_all <- renderWebGL({
     scores <- sort(nblast_scores(), decreasing=TRUE)
     plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10))
   }
-  plot3d(FCWB)
+  plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
 })
 
@@ -243,7 +238,7 @@ output$brain3d_tracing <- renderWebGL({
     scores <- sort(scores, decreasing=TRUE)
     plot3d(dps[names(scores)[1:10]])
   }
-  plot3d(FCWB)
+  plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
 })
 
