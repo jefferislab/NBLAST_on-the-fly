@@ -19,10 +19,36 @@ neuron_names <- fc_neuron(names(dps))
 neuron_ids <- fc_idid(names(dps))
 
 shinyUI(fluidPage(
+  HTML(
+    '<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand">NBLAST on-the-fly</span>
+        </div>
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="#one-against-all">One against all</a>
+          </li>
+          <li>
+            <a href="#pairwise">Pairwise comparison</a>
+          </li>
+          <li>
+            <a href="#tracing">Upload a tracing</a>
+          </li>
+          <li>
+            <a href="#about">About</a>
+          </li>
+        </ul>
+      </div>
+    </nav>'
+  ),
+  
+  
   ###################
   # One against all #
   ###################
-  h1("One against all"),
+  HTML('<a name="one-against-all"></a>'),
+  h1("One against all", style="padding-top: 70px;"),
   sidebarLayout(
     sidebarPanel(
       ################
@@ -70,7 +96,8 @@ shinyUI(fluidPage(
   #######################
   # Pairwise comparison #
   #######################
-  h1("Pairwise comparison"),
+  HTML('<a name="pairwise"></a>'),
+  h1("Pairwise comparison", style="padding-top: 70px;"),
   sidebarLayout(  
     sidebarPanel(
       h3("Instructions"),
@@ -118,7 +145,8 @@ shinyUI(fluidPage(
   ################
   # User tracing #
   ################
-  h1("Upload a tracing"),
+  HTML('<a name="tracing"></a>'),
+  h1("Upload a tracing", style="padding-top: 70px;"),
   sidebarLayout(
     sidebarPanel(
       h3("Instructions"),
@@ -157,7 +185,8 @@ shinyUI(fluidPage(
   #########
   # About #
   #########
-  h1("About"),
+  HTML('<a name="about"></a>'),
+  h1("About", style="padding-top: 100px;"),
   HTML("This web app accompanies <a href='http://dx.doi.org/10.1101/006346'>Costa et al. (2014) NBLAST: Rapid, sensitive comparison of neuronal structure and construction of neuron family databases</a>. More information on other NBLAST resources is available <a href='http://jefferislab.org/si/nblast'>here</a>. NBLAST on-the-fly acts as a demonstration of the core NBLAST algorithm (package <a href='https://github.com/jefferislab/nat.nblast'>nat.nblast</a>), along with some features of the <a href='https://github.com/jefferis/nat'>NeuroAnatomy Toolbox</a> and its helper packages: <a href='https://github.com/jefferislab/nat.templatebrains'>nat.templatebrains</a> and <a href='https://github.com/jefferislab/nat.flybrains'>nat.flybrains</a>. Other resources available are listed <a href='http://jefferislab.org/si/nblast/www/'>here</a>. For further information on how we convert data between template brains, see <a href='http://jefferislab.org/si/bridging/'>here</a>."),
   h3("Local installation"),
   HTML("Instructions on how to install this app locally are <a href='https://github.com/jefferislab/NBLAST_on-the-fly'>here</a>, and a video demo <a href='http://jefferislab.org/si/nblast/www/demos/#nblast-online'>here</a>."),
@@ -166,7 +195,8 @@ shinyUI(fluidPage(
   h3("Source code"),
   HTML("The full code for this web app can be downloaded from <a href='https://github.com/jefferislab/NBLAST_online'>GitHub</a>."),
   h3("Preparing own data"),
-  HTML("Protocols for <a href='http://cshprotocols.cshlp.org/content/2013/4/pdb.prot071720.full'>immunostaining and imaging fly brains</a>, as well as <a href='http://cshprotocols.cshlp.org/content/2013/4/pdb.prot071738.full'>registration of the resulting images</a> are available from Cold Spring Harbor Protocols. We recommend the use of <a href='http://fiji.sc/Simple_Neurite_Tracer'>Simple Neurite Tracer</a> for tracing neurons from the acquired images, detailed instructions for which are available from <a href='http://fiji.sc/Simple_Neurite_Tracer:_Step-By-Step_Instructions'>here</a>.")
+  HTML("Protocols for <a href='http://cshprotocols.cshlp.org/content/2013/4/pdb.prot071720.full'>immunostaining and imaging fly brains</a>, as well as <a href='http://cshprotocols.cshlp.org/content/2013/4/pdb.prot071738.full'>registration of the resulting images</a> are available from Cold Spring Harbor Protocols. We recommend the use of <a href='http://fiji.sc/Simple_Neurite_Tracer'>Simple Neurite Tracer</a> for tracing neurons from the acquired images, detailed instructions for which are available from <a href='http://fiji.sc/Simple_Neurite_Tracer:_Step-By-Step_Instructions'>here</a>."),
+  div(style="height: 1000px;")
 )
 )
 
