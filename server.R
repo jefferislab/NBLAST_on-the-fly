@@ -71,7 +71,7 @@ vfb_url <- function(neuron_name, style=c("dev", "old")) {
   if(style=='old'){
     paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
   } else {
-    paste0("http://vfbdev.inf.ed.ac.uk/site/stacks/index.htm?add=", vfb_id)
+    paste0("http://vfbsandbox3.inf.ed.ac.uk/site/stacks/index.htm?add=", vfb_id)
   }
 }
 
