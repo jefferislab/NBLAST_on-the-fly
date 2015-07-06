@@ -25,7 +25,7 @@ vfb_ids=readRDS('vfb_ids.rds')
 # vfb_annotations_download <- tempfile()
 # download("https://raw.githubusercontent.com/VirtualFlyBrain/VFB_owl/master/doc/annotation_map.tsv", vfb_annotations_download)
 
-vfb_annotations <- read.table("annotation_map.tsv", header=TRUE, sep="\t")
+vfb_annotations <- read.table("annotation_map.tsv", header=TRUE, sep="\t", quote = "")
 
 # Load the affinity propagation results
 apres16k.p0 <- load_fcdata("apres16k.p0")
