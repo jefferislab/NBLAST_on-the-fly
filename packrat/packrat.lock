@@ -1,0 +1,377 @@
+PackratFormat: 1.4
+PackratVersion: 0.4.4
+RVersion: 3.2.1
+Repos: CRAN=http://cran.rstudio.com
+
+Package: BH
+Source: CRAN
+Version: 1.58.0-1
+Hash: 4f6db3b5311bb006f536a2e67278d058
+
+Package: MASS
+Source: CRAN
+Version: 7.3-40
+Hash: 33fe8ee60aa2e8842c66484f0e715f79
+
+Package: Matrix
+Source: CRAN
+Version: 1.2-1
+Hash: 1377c2f3a195369b6c2fddd79ba8f339
+Requires: lattice
+
+Package: NMF
+Source: CRAN
+Version: 0.20.6
+Hash: 632aad207ab2e551b33990c9f09ab8af
+Requires: RColorBrewer, cluster, colorspace, digest, doParallel,
+    foreach, ggplot2, gridBase, pkgmaker, registry, reshape2, rngtools,
+    stringr
+
+Package: R6
+Source: CRAN
+Version: 2.1.0
+Hash: a09c7e41c29b376d6443da7fc5b9d763
+
+Package: RColorBrewer
+Source: CRAN
+Version: 1.1-2
+Hash: c0d56cd15034f395874c870141870c25
+
+Package: RCurl
+Source: CRAN
+Version: 1.95-4.7
+Hash: 7756ed9df5d79ca87bc9e93f85d89b87
+Requires: bitops
+
+Package: RJSONIO
+Source: CRAN
+Version: 1.3-0
+Hash: fb672e20eb6f3010a3639f855d8ef6de
+
+Package: Rcpp
+Source: CRAN
+Version: 0.11.6
+Hash: 193916618dce89b287517f457de8fa8b
+
+Package: RcppEigen
+Source: CRAN
+Version: 0.3.2.4.0
+Requires: Matrix, Rcpp
+
+Package: apcluster
+Source: CRAN
+Version: 1.4.1
+Hash: 074663f67fa1751ee0b3bbd419f0b199
+Requires: Matrix, Rcpp
+
+Package: bigmemory
+Source: CRAN
+Version: 4.4.6
+Hash: d4a64b4a83bb9269105929ec06c642c4
+Requires: BH, bigmemory.sri
+
+Package: bigmemory.sri
+Source: CRAN
+Version: 0.1.3
+Hash: 0054f67755bfacbe8a4b68624f071c3b
+
+Package: bit
+Source: CRAN
+Version: 1.1-12
+Hash: a4cdb11cf9fd6dd38f9f40c413b81e93
+
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+Hash: 67d0775189fd0041d95abca618c5c07e
+
+Package: cluster
+Source: CRAN
+Version: 2.0.2
+Hash: cc640cb094daf05a201c0afb826e4d1d
+
+Package: codetools
+Source: CRAN
+Version: 0.2-11
+Hash: d994e0c81b15c01f77ff98dfa30b4d87
+
+Package: colorspace
+Source: CRAN
+Version: 1.2-6
+Hash: 00bb12245cd975c450cc4a960884fa15
+
+Package: dendroextras
+Source: CRAN
+Version: 0.2.1
+Hash: a1b8f59710a8881895713148ecb3a7f0
+
+Package: dichromat
+Source: CRAN
+Version: 2.0-0
+Hash: 08eed0c80510af29bb15f840ccfe37ce
+
+Package: digest
+Source: CRAN
+Version: 0.6.8
+Hash: de202f956596a476d09304e3a2ebf1e5
+
+Package: doParallel
+Source: CRAN
+Version: 1.0.8
+Hash: e4a4e777f61e19769d00b129e2ef889f
+Requires: foreach, iterators
+
+Package: downloader
+Source: CRAN
+Version: 0.3
+Hash: 3549f546db4a50ff6d789f5e472b3aa3
+Requires: digest
+
+Package: ff
+Source: CRAN
+Version: 2.2-13
+Hash: 19df41f19fe0072e7537e33b69f6231b
+Requires: bit
+
+Package: filehash
+Source: CRAN
+Version: 2.2-2
+Hash: e62432ddef2479485c97d75ae1983bed
+
+Package: flycircuit
+Source: github
+Version: 0.6.5
+Hash: 67073d989d575e532fe2a62bbc8f517c
+Requires: RCurl, apcluster, bigmemory, ff, nat, rappdirs, rgl, yaml
+GithubRepo: flycircuit
+GithubUsername: jefferis
+GithubRef: master
+GithubSha1: 1264fbbadcb913a0ae7c5cc05eabc56660d1f339
+
+Package: foreach
+Source: CRAN
+Version: 1.4.2
+Hash: c306afbbf5cc2608170bc7205bf58bea
+Requires: codetools, iterators
+
+Package: ggplot2
+Source: CRAN
+Version: 1.0.1
+Hash: 4aff1b269135bd2cdea378f4f2f2895e
+Requires: MASS, digest, gtable, plyr, proto, reshape2, scales
+
+Package: gridBase
+Source: CRAN
+Version: 0.4-7
+Hash: d4b7f73c0fdf11d18d1e1ae1643ac4ec
+
+Package: gtable
+Source: CRAN
+Version: 0.1.2
+Hash: 38a0f066373a60824cd3ade2362af363
+
+Package: htmltools
+Source: CRAN
+Version: 0.2.6
+Hash: 595e7dea94f5f049dfc1ed739f5161af
+Requires: digest
+
+Package: httpuv
+Source: CRAN
+Version: 1.3.2
+Hash: 2313c5269a97eddd06e93ed977eb5478
+Requires: Rcpp
+
+Package: igraph
+Source: CRAN
+Version: 1.0.1
+Hash: 26ac36402e881905359daabfd9ba4057
+Requires: Matrix, NMF, irlba, magrittr
+
+Package: irlba
+Source: CRAN
+Version: 1.0.3
+Hash: 3cb2d807bc15b944a94acfc1d2c45b22
+Requires: Matrix
+
+Package: iterators
+Source: CRAN
+Version: 1.0.7
+Hash: 5b4df529141f993389b8fb24d56fe531
+
+Package: jsonlite
+Source: CRAN
+Version: 0.9.16
+Hash: 24d362a166a96ac1969e64ede522c717
+
+Package: labeling
+Source: CRAN
+Version: 0.3
+Hash: ecf589b42cd284b03a4beb9665482d3e
+
+Package: lattice
+Source: CRAN
+Version: 0.20-31
+Hash: da42d85edbc090b649969aaf78d3a5f0
+
+Package: magrittr
+Source: CRAN
+Version: 1.5
+Hash: bdc4d48c3135e8f3b399536ddf160df4
+
+Package: mime
+Source: CRAN
+Version: 0.3
+Hash: 629133973445ad75e5438a2bb6b05c17
+
+Package: munsell
+Source: CRAN
+Version: 0.4.2
+Hash: 72d343a6664778029f49a7ad36de1cab
+Requires: colorspace
+
+Package: nabor
+Source: CRAN
+Version: 0.4.6
+Hash: 86566f41e04932a3fd0b39d48229f351
+Requires: BH, Rcpp, RcppEigen
+
+Package: nat
+Source: CRAN
+Version: 1.7.0
+Hash: 393a70a3e9ef1a43419b41fd22f3c39b
+Requires: digest, filehash, igraph, nabor, nat.utils, plyr, rgl, yaml
+
+Package: nat.flybrains
+Source: github
+Version: 1.5
+Hash: 885f5d8f3682c9036531723125872b63
+Requires: nat.templatebrains, rappdirs
+GithubRepo: nat.flybrains
+GithubUsername: jefferislab
+GithubRef: master
+GithubSha1: cb6db3b61cc820d35abc836771dc425d3ae8b12b
+
+Package: nat.nblast
+Source: CRAN
+Version: 1.5
+Hash: b247c945a685beee3af39f252f5d3f22
+Requires: dendroextras, nabor, nat, plyr, rgl, spam
+
+Package: nat.templatebrains
+Source: CRAN
+Version: 0.4.1
+Hash: 74f15164df63121cd384a7a423c05e44
+Requires: nat, rgl
+
+Package: nat.utils
+Source: CRAN
+Version: 0.5.1
+Hash: 169156257c0c9022ba3b065c0a0508f4
+
+Package: packrat
+Source: CRAN
+Version: 0.4.4
+Hash: aed7d17407538df551a57caf6289c8bf
+
+Package: pkgmaker
+Source: CRAN
+Version: 0.22
+Hash: 2e5fc2a6b7eaeb1e1d397a8dc5f54480
+Requires: codetools, digest, registry, stringr, xtable
+
+Package: plyr
+Source: CRAN
+Version: 1.8.3
+Hash: 36f23123a89bfe6d93b2d219387ae795
+Requires: Rcpp
+
+Package: proto
+Source: CRAN
+Version: 0.3-10
+Hash: 05d7ad64db29a39d1b02c4b9f1f4edb2
+
+Package: rappdirs
+Source: CRAN
+Version: 0.3
+Hash: c9a4d9f37c040e0f2f548ab8883c745e
+
+Package: registry
+Source: CRAN
+Version: 0.2
+Hash: 994cafef8cc4a0f6e999fb5ee4decc9b
+
+Package: reshape2
+Source: CRAN
+Version: 1.4.1
+Hash: 5990382c4af41f623890b1aeb63ffab5
+Requires: Rcpp, plyr, stringr
+
+Package: rgl
+Source: CRAN
+Version: 0.95.1201
+Hash: 821ac57e965947b9b0b136063fca734c
+
+Package: rngtools
+Source: CRAN
+Version: 1.2.4
+Hash: 4db0661fe95ab6eb3d6339495bf22003
+Requires: digest, pkgmaker, stringr
+
+Package: scales
+Source: CRAN
+Version: 0.2.5
+Hash: bec2b5457cce7f6b4922fc0610085a48
+Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+
+Package: shiny
+Source: CRAN
+Version: 0.12.1
+Hash: b0066db774f42c02416c5e2d49cd1a15
+Requires: R6, digest, htmltools, httpuv, jsonlite, mime, xtable
+
+Package: shinyRGL
+Source: github
+Version: 0.1.1
+Hash: 4f4a0d269746d0b8d3523a773f380e61
+Requires: rgl, shiny
+GithubRepo: shinyRGL
+GithubUsername: trestletech
+GithubRef: master
+GithubSha1: 935b1431364587434d822d4b6b9e135030e6e0b5
+
+Package: shinysky
+Source: github
+Version: 0.1.2
+Hash: fcf4a0e2d5930325163d5d49b8a949cd
+Requires: RJSONIO, plyr, shiny
+GithubRepo: ShinySky
+GithubUsername: AnalytixWare
+GithubRef: master
+GithubSha1: 15c29bec4e7c5e694625e571656515a8ace7f376
+
+Package: spam
+Source: CRAN
+Version: 1.0-1
+Hash: 4ad8db0dce5dba85077bb6e5aae5e1a1
+
+Package: stringi
+Source: CRAN
+Version: 0.5-5
+Hash: e7c67668a472e26e0c95bc8fa9049198
+
+Package: stringr
+Source: CRAN
+Version: 1.0.0
+Hash: 2676dd5f88890910962b733b0f9540e1
+Requires: magrittr, stringi
+
+Package: xtable
+Source: CRAN
+Version: 1.7-4
+Hash: 30ed90ebdd90a529aab31fd6792a8d61
+
+Package: yaml
+Source: CRAN
+Version: 2.1.13
+Hash: 4854ccabebc225e8a7309fb4a74980de
