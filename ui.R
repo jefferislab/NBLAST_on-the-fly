@@ -7,11 +7,6 @@ library(shinyRGL)
 library(shinysky)
 library(ggplot2)
 
-# URL synching
-hashProxy <- function(inputoutputID) {
-  div(id=inputoutputID,class=inputoutputID,tag("div",""));
-}
-
 
 dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
 
@@ -45,12 +40,6 @@ shinyUI(fluidPage(
   h1("One against all", style="padding-top: 70px;"),
   sidebarLayout(
     sidebarPanel(
-      ################
-      # URL synching #
-      ################
-      includeHTML("url.js"),
-      hashProxy("hash"),
-      
       h3("Instructions"),
       HTML("Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
       h3("Query:"),
