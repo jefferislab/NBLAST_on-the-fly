@@ -30,12 +30,6 @@ shinyUI(fluidPage(
             <a href="#one-against-all">One against all</a>
           </li>
           <li>
-            <a href="#pairwise">Pairwise comparison</a>
-          </li>
-          <li>
-            <a href="#tracing">Upload a tracing</a>
-          </li>
-          <li>
             <a href="#about">About</a>
           </li>
         </ul>
@@ -89,100 +83,6 @@ shinyUI(fluidPage(
       tableOutput("nblast_results_all_top10_clusters"),
       h3("Score distribution"),
       plotOutput("nblast_results_all")
-    )
-  ),
-  
-  div(style="height: 100vh;"),
-  
-  
-  #######################
-  # Pairwise comparison #
-  #######################
-  HTML('<a name="pairwise"></a>'),
-  h1("Pairwise comparison", style="padding-top: 70px;"),
-  sidebarLayout(  
-    sidebarPanel(
-      h3("Instructions"),
-      HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
-      h3("Query:"),
-      textInput.typeahead(
-        id="query_one",
-        placeholder="Type a FlyCircuit neuron name",
-        local=data.frame(name=neuron_names, id=neuron_ids),
-        valueKey = "name",
-        tokens=neuron_ids,
-        template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-      ),
-      
-      h3("Target:"),
-      textInput.typeahead(
-        id="target_one",
-        placeholder="Type a FlyCircuit neuron name",
-        local=data.frame(name=neuron_names, id=neuron_ids),
-        valueKey = "name",
-        tokens=neuron_ids,
-        template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-      ),
-      br(),
-      br(),
-      submitButton("NBLAST")
-    ),
-    
-    mainPanel(
-      h2("3D view"),
-      ###################
-      # Loading spinner #
-      ###################
-      includeCSS("loader.css"),
-      HTML("<div class='loader' style='position: absolute; left: 400px; top: 300px; z-index: -10000;'>Loading...</div>"),
-      
-      webGLOutput("brain3d_one", width="800px", height="800px"),
-      h2("NBLAST results"),
-      textOutput("nblast_results_one"),
-      HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
-    )
-  ),
-  
-  div(style="height: 100vh;"),
-  
-  
-  ################
-  # User tracing #
-  ################
-  HTML('<a name="tracing"></a>'),
-  h1("Upload a tracing", style="padding-top: 70px;"),
-  sidebarLayout(
-    sidebarPanel(
-      h3("Instructions"),
-      HTML("Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
-      h3("Query"),
-      fileInput('tracing_file', "Your tracing:"),
-      selectInput('brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
-      br(),
-      checkboxInput('all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
-      br(),
-      submitButton("NBLAST")
-    ),
-    
-    mainPanel(
-      HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
-      h2("3D view"),
-      ###################
-      # Loading spinner #
-      ###################
-      includeCSS("loader.css"),
-      HTML("<div class='loader' style='position: absolute; left: 400px; top: 300px; z-index: -10000;'>Loading...</div>"),
-      
-      webGLOutput("brain3d_tracing", width="800px", height="800px"),
-      h2("NBLAST results"),
-      HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
-      conditionalPanel(condition = "output.nblast_tracing_complete",
-                       downloadButton('nblast_results_tracing_download', 'Download all scores as CSV')
-      ),
-      h3("Top 10 hits"),
-      tableOutput("nblast_results_tracing_top10"),
-      h3("Score distribution"),
-      plotOutput("nblast_results_tracing")
     )
   ),
   
