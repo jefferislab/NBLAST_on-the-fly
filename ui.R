@@ -14,6 +14,7 @@ neuron_names <- fc_neuron(names(dps))
 neuron_ids <- fc_idid(names(dps))
 
 shinyUI(fluidPage(
+  tags$head(tags$style(type="text/css", "body.disconnected { background-color: inherit; opacity: 1;}")),
   HTML(
     '<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
