@@ -106,24 +106,10 @@ shinyUI(fluidPage(
       h3("Instructions"),
       HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
       h3("Query:"),
-      textInput.typeahead(
-        id="query_one",
-        placeholder="Type a FlyCircuit neuron name",
-        local=data.frame(name=neuron_names, id=neuron_ids),
-        valueKey = "name",
-        tokens=neuron_ids,
-        template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-      ),
+      textInput("query_one", "", ""),
       
       h3("Target:"),
-      textInput.typeahead(
-        id="target_one",
-        placeholder="Type a FlyCircuit neuron name",
-        local=data.frame(name=neuron_names, id=neuron_ids),
-        valueKey = "name",
-        tokens=neuron_ids,
-        template = HTML("<p class='repo-language'>{{id}}</p> <p class='repo-name'>{{name}}</p>")
-      ),
+      textInput("target_one","", ""),
       br(),
       br(),
       submitButton("NBLAST")

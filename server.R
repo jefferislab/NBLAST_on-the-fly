@@ -143,6 +143,7 @@ output$hash <- reactiveText(function() {
 output$brain3d_one <- renderWebGL({
   query_neuron <- input$query_one
   target_neuron <- input$target_one
+  if((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
   if(nzchar(query_neuron) && nzchar(target_neuron)) {
     clear3d()
     plot3d(dps[fc_gene_name(query_neuron)], col='red')
