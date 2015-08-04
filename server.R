@@ -102,10 +102,12 @@ type_for_neuron<-function(n) {
   tdf[tdf$gene_name == gns, 'text']
 }
 
-link_for_neuron_type <- function(type) {
+link_for_neuron_type <- function(type, style=c("dev", "old")) {
+  style <- match.arg(style, c("dev", "old"))
   links <- sapply(type, function(x) {
     ffbt <- vfb_annotations[vfb_annotations$a.text == x, 'class_id']
-    url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
+    if(style == "old") url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
+    else url <- paste0("http://vfbsandbox3.inf.ed.ac.uk/site/tools/anatomy_finder/index.htm?id=", ffbt)
     link <- ifelse(length(ffbt) == 0, paste0("<span style='color: black;'>", x, "</span>"), paste0("<a target='_blank' href='", url, "'>", x, "</a>"))
     link
   })
