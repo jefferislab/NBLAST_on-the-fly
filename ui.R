@@ -79,6 +79,7 @@ shinyUI(fluidPage(
       
       webGLOutput("brain3d_all", width="800px", height="800px"),
       h2("NBLAST results"),
+      textOutput("nblast_all_query"),
       HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
       conditionalPanel(condition = "output.nblast_all_complete",
                        downloadButton('nblast_results_all_download', 'Download all scores as CSV')
@@ -138,6 +139,7 @@ shinyUI(fluidPage(
       
       webGLOutput("brain3d_one", width="800px", height="800px"),
       h2("NBLAST results"),
+      textOutput("nblast_one_query_target"),
       textOutput("nblast_results_one"),
       HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
     )

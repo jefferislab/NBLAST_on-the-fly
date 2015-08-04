@@ -152,6 +152,16 @@ output$brain3d_one <- renderWebGL({
   frontalView()
 })
 
+output$nblast_one_query_target <- renderText({
+  query_neuron <- input$query_one
+  target_neuron <- input$target_one
+  if(nzchar(query_neuron) && nzchar(target_neuron)) {
+    paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
+  } else {
+    NULL
+  }
+})
+
 output$nblast_results_one <- renderText({
   query_neuron <- input$query_one
   target_neuron <- input$target_one
@@ -207,6 +217,11 @@ nblast_scores <- reactive({
   scores <- unlist(scores)
   names(scores) <- fc_neuron(names(scores))
   scores
+})
+
+output$nblast_all_query <- renderText({
+  if(query_neuron() == "") return(NULL)
+  paste0("Query: ", query_neuron())
 })
 
 output$nblast_results_all <- renderPlot({
