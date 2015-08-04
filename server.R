@@ -323,7 +323,23 @@ tracing <- reactive({
   message(template_brain)
   if(template_brain != "FCWB") {
     template_brain <- get(template_brain)
-    tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+    
+    
+    if(input$mirror) {
+      tryCatch({
+        tracing_neuron <- mirror_brain(tracing_neuron, template_brain)
+        tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+      }, error = function(e) {
+        tryCatch({
+          tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+          tracing_neuron <- mirror_brain(tracing_neuron, FCWB)
+        }, error = function(e) {
+          stop("Could not mirror neuron.")
+        })
+      })
+    } else {
+      tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+    }
   }
   tracing_neuron
 })
