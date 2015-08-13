@@ -150,6 +150,7 @@ shinyUI(fluidPage(
       br(),
       checkboxInput('all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
       br(),
+      checkboxInput('use_mean_tracing', label="Use mean scores", value=FALSE),
       submitButton("NBLAST")
     ),
     
