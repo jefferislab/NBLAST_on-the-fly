@@ -314,18 +314,16 @@ tracing <- reactive({
   isolate({
   query_neuron <- input$tracing_file
   if(is.null(query_neuron)) return(NULL)
-  if(grepl("\\.nrrd", query_neuron$name) tracing_neuron <- nat:::dotprops(query_neuron$datapath, k = 10)
-  else if (grepl("\\.swc", query_neuron$name)) {
-    tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
-    tracing_neuron <- dotprops(tracing_neuron, resample=1)
-  }
-  else {
-    tracing_neuron <- read.neuron(query_neuron$datapath)
+  if(grepl("\\.nrrd", query_neuron$name)) {
+    tracing_neuron <- nat:::dotprops(query_neuron$datapath, k = 10)
+  } else {
+    if (grepl("\\.swc", query_neuron$name))
+      tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+    else tracing_neuron <- read.neuron(query_neuron$datapath)
+    
     tracing_neuron <- dotprops(tracing_neuron, resample=1)
   }
   })
-  
-  # tracing_neuron <- dotprops(tracing_neuron, resample=1)
 
   message(template_brain)
   if(template_brain != "FCWB") {
