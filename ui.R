@@ -1,3 +1,10 @@
+if(!interactive()) {
+  message("rgl use NULL device to avoid problems on headless servers")
+  options(rgl.useNULL=TRUE)
+} else {
+  message("interactive mode - full rgl")
+}
+
 library(nat)
 library(nat.flybrains)
 library(nat.nblast)
