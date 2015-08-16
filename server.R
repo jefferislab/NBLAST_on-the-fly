@@ -315,7 +315,7 @@ tracing <- reactive({
   query_neuron <- input$tracing_file
   if(is.null(query_neuron)) return(NULL)
   if(grepl("\\.nrrd", query_neuron$name)) {
-    tracing_neuron <- nat:::dotprops(query_neuron$datapath, k = 10)
+    tracing_neuron <- dotprops(query_neuron$datapath, k = 10)
   } else {
     if (grepl("\\.swc", query_neuron$name))
       tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
