@@ -378,14 +378,16 @@ withProgress(min=1, max=10, message="NBLAST in progress", detail="This may take 
       if(!input$all_neurons) {
         chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
         if(input$use_mean_tracing) {
-          scores[[i]] <- (nblast(dotprops(query_neuron), dps[exemplars[chunk]], normalised=TRUE) + nblast(dps[exemplars[chunk]], dotprops(query_neuron), normalised=TRUE)) / 2
+          scores[[i]] <- (nblast(dotprops(query_neuron), dps[exemplars[chunk]], normalised=TRUE) + 
+                            nblast(dps[exemplars[chunk]], dotprops(query_neuron), normalised=TRUE)) / 2
         } else {
           scores[[i]] <- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
         }
       } else {
         chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
         if(input$use_mean_tracing) {
-          scores[[i]] <- (nblast(dotprops(query_neuron), dps[chunk], normalised=TRUE) + nblast(dps[chunk], dotprops(query_neuron)), normalised=TRUE) / 2
+          scores[[i]] <- (nblast(dotprops(query_neuron), dps[chunk], normalised=TRUE) 
+                          + nblast(dps[chunk], dotprops(query_neuron), normalised=TRUE)) / 2
         } else {
           scores[[i]] <- nblast(dotprops(query_neuron), dps[chunk])
         }
