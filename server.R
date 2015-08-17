@@ -24,13 +24,9 @@ dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9
 allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
 
 # Load VFB ID lookup table
-# vfb_ids <- read.table("http://www.virtualflybrain.org/public_resources/fc_name_mapping.csv", sep=",", header=TRUE)
 vfb_ids=readRDS('vfb_ids.rds')
 
 # Load VFB annotation ID lookup table
-# vfb_annotations_download <- tempfile()
-# download("https://raw.githubusercontent.com/VirtualFlyBrain/VFB_owl/master/doc/annotation_map.tsv", vfb_annotations_download)
-
 vfb_annotations <- read.table("annotation_map.tsv", header=TRUE, sep="\t", quote = "")
 
 # Load the affinity propagation results
