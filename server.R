@@ -320,11 +320,30 @@ tracing <- reactive({
   isolate({
   query_neuron <- input$tracing_file
   if(is.null(query_neuron)) return(NULL)
-  if(grepl("\\.swc", query_neuron$name)) tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
-  else tracing_neuron <- read.neuron(query_neuron$datapath)
+  if(grepl("\\.nrrd", query_neuron$name)) {
+    # first read the header
+    ni <- read.im3d(query_neuron$datapath, ReadData = F)
+    if(prod(dim(ni))> 150e6) 
+      stop("Nrrd image files must be <= 150 megavoxels. ",
+           "Try downsampling to ~ 1 x 1 x 1 µm voxel size.")
+    # read the image
+    im=read.im3d(query_neuron$datapath)
+    coords=ind2coord(im)
+    if(nrow(coords) > 1e5)
+      stop("Nrrd image contains > 100,000 non-zero voxels. Please use a ",
+           "skeletonised/binarised image as produced by http://fiji.sc/Skeletonize3D")
+    
+    # TODO come up with a heuristic to choose the number of neighbours (k)
+    # based on the voxel dimensions
+    tracing_neuron <- dotprops(coords, k = 10)
+  } else {
+    if (grepl("\\.swc", query_neuron$name))
+      tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+    else tracing_neuron <- read.neuron(query_neuron$datapath)
+    
+    tracing_neuron <- dotprops(tracing_neuron, resample=1)
+  }
   })
-  
-  tracing_neuron <- dotprops(tracing_neuron, resample=1)
 
   message(template_brain)
   if(template_brain != "FCWB") {

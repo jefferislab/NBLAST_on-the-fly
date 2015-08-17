@@ -145,13 +145,13 @@ shinyUI(fluidPage(
   # User tracing #
   ################
   HTML('<a name="tracing"></a>'),
-  h1("Upload a tracing", style="padding-top: 70px;"),
+  h1("Upload tracing or skeletonised neuron", style="padding-top: 70px;"),
   sidebarLayout(
     sidebarPanel(
       h3("Instructions"),
-      HTML("Upload a tracing to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
+      HTML("Upload a tracing or skeletonised neuron to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
       h3("Query"),
-      fileInput('tracing_file', "Your tracing:"),
+      fileInput('tracing_file', "Your tracing (e.g. swc) or skeletonised neuron (nrrd file):"),
       selectInput('brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
       checkboxInput("mirror", "Mirror?", value=FALSE),
       br(),
