@@ -348,8 +348,6 @@ tracing <- reactive({
   message(template_brain)
   if(template_brain != "FCWB") {
     template_brain <- get(template_brain)
-    
-    
     if(input$mirror) {
       tryCatch({
         tracing_neuron <- mirror_brain(tracing_neuron, template_brain)
@@ -365,6 +363,9 @@ tracing <- reactive({
     } else {
       tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
     }
+  } else {
+    # FCWB template brain
+    tracing_neuron <- mirror_brain(tracing_neuron, FCWB)
   }
   tracing_neuron
 })
