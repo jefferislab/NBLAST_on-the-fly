@@ -315,6 +315,13 @@ tracing <- reactive({
   query_neuron <- input$tracing_file
   if(is.null(query_neuron)) return(NULL)
   if(grepl("\\.nrrd", query_neuron$name)) {
+    # first read the header
+    ni <- read.im3d(query_neuron$datapath, ReadData = F)
+    if(prod(dim(ni))> 150e6) 
+      stop("Nrrd image files must be <= 150 megavoxels. ",
+           "Try downsampling to ~ 1 x 1 x 1 µm voxel size.")
+    # TODO come up with a heuristic to choose the number of neighbours (k)
+    # based on the voxel dimensions
     tracing_neuron <- dotprops(query_neuron$datapath, k = 10)
   } else {
     if (grepl("\\.swc", query_neuron$name))
