@@ -154,8 +154,8 @@ output$brain3d_one <- renderWebGL({
   if((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
   if(nzchar(query_neuron) && nzchar(target_neuron)) {
     clear3d()
-    plot3d(dps[fc_gene_name(query_neuron)], col='red')
-    plot3d(dps[fc_gene_name(target_neuron)], col='blue')
+    plot3d(dps[fc_gene_name(query_neuron)], col='red', soma=TRUE)
+    plot3d(dps[fc_gene_name(target_neuron)], col='blue', soma=TRUE)
   }
   plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
@@ -191,9 +191,9 @@ output$brain3d_all <- renderWebGL({
   if(nzchar(query_neuron)) {
     if(fc_gene_name(query_neuron) %in% names(dps)) {
     clear3d()
-    plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2)
+    plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2, soma=TRUE)
     scores <- sort(nblast_scores(), decreasing=TRUE)
-    plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10))
+    plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10), soma=TRUE)
     }
   }
   plot3d(FCWB.surf, col='grey', alpha=0.3)
@@ -304,10 +304,10 @@ output$nblast_results_all_top10_clusters <- renderTable({
 output$brain3d_tracing <- renderWebGL({
   query_neuron <- tracing()
   if(!is.null(query_neuron)) {
-    plot3d(query_neuron, col='black', lwd=2)
+    plot3d(query_neuron, col='black', lwd=2, soma=TRUE)
     scores <- nblast_scores_tracing()
     scores <- sort(scores, decreasing=TRUE)
-    plot3d(dps[names(scores)[1:10]])
+    plot3d(dps[names(scores)[1:10]], soma=TRUE)
   }
   plot3d(FCWB.surf, col='grey', alpha=0.3)
   frontalView()
