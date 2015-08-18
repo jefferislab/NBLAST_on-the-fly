@@ -124,7 +124,7 @@ dotprops_from_nrrd<-function(f, ...) {
     stop("Nrrd image files must be <= 150 megavoxels. ",
          "Try downsampling to ~ 1 x 1 x 1 µm voxel size.")
   # read the image
-  im=read.im3d(f)
+  im=read.im3d(f, ReadByteAsRaw = TRUE)
   coords=ind2coord(im)
   if(nrow(coords) > 1e5)
     stop("Nrrd image contains > 100,000 non-zero voxels. Please use a ",
