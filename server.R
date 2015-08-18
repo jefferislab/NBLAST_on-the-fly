@@ -120,15 +120,19 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 #' that are quite specific to shiny usage
 dotprops_from_nrrd<-function(f, ...) {
   ni <- read.im3d(f, ReadData = F)
-  if(prod(dim(ni))> 150e6) 
-    stop("Nrrd image files must be <= 150 megavoxels. ",
+  
+  imsize=prod(unlist(attr(ni,'datablock')[c("n","size")]))
+  if(imsize > 150e6) 
+    stop("Nrrd image files must be <= 150 Mb uncompressed. ",
          "Try downsampling to ~ 1 x 1 x 1 µm voxel size.")
+  
   # read the image
   im=read.im3d(f, ReadByteAsRaw = TRUE)
   coords=ind2coord(im)
   if(nrow(coords) > 1e5)
     stop("Nrrd image contains > 100,000 non-zero voxels. Please use a ",
          "skeletonised/binarised image as produced by http://fiji.sc/Skeletonize3D")
+  
   dotprops(coords, ...)
 }
 
