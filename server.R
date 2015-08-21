@@ -101,7 +101,8 @@ tdf$gene_name <- fc_gene_name(tdf$neuron_idid)
 
 type_for_neuron<-function(n) {
   gns=fc_gene_name(n)
-  tdf[tdf$gene_name == gns, 'text']
+  type=tdf[tdf$gene_name == gns, 'text']
+  unique(type)
 }
 
 link_for_neuron_type <- function(type, style=c("dev", "old")) {
