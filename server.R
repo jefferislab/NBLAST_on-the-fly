@@ -60,12 +60,12 @@ assignInNamespace('inRows', inRows, ns='rgl')
 
 # Functions for converting gene names to FlyCircuit.tw URLs and making links
 flycircuit_url <- function(neuron_name) {
-  idid <- fc_idid(neuron_name)
-  paste0("http://flycircuit.tw/modules.php?name=clearpage&op=detail_table&idid=", idid)
+  neuron_name <- fc_neuron(neuron_name)
+  paste0("http://flycircuit.tw/modules.php?name=clearpage&op=detail_table&neuron=", neuron_name)
 }
 
 flycircuit_link <- function(neuron_name) {
-  url <- flycircuit_url(fc_gene_name(neuron_name))
+  url <- flycircuit_url(neuron_name)
   paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
 }
 
