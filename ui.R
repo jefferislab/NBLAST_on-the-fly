@@ -92,6 +92,7 @@ shinyUI(fluidPage(
                        downloadButton('nblast_results_all_download', 'Download all scores as CSV')
       ),
       h3("Top 10 hits"),
+      htmlOutput("nblast_results_all_viewer"),
       tableOutput("nblast_results_all_top10"),
       h3("Top 10 clusters"),
       tableOutput("nblast_results_all_top10_clusters"),
@@ -177,6 +178,7 @@ shinyUI(fluidPage(
                        downloadButton('nblast_results_tracing_download', 'Download all scores as CSV')
       ),
       h3("Top 10 hits"),
+      htmlOutput("nblast_results_tracing_viewer"),
       tableOutput("nblast_results_tracing_top10"),
       h3("Score distribution"),
       plotOutput("nblast_results_tracing")

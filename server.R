@@ -71,11 +71,11 @@ flycircuit_link <- function(neuron_name) {
 
 vfb_url <- function(neuron_name, style=c("dev", "old")) {
   style=match.arg(style, c("dev", "old"))
-  vfb_id <- vfb_ids[vfb_ids$Name == neuron_name, 'vfbid']
+  vfb_id <- as.character(vfb_ids[vfb_ids$Name %in% neuron_name, 'vfbid'])
   if(style=='old'){
     paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
   } else {
-    paste0("http://vfbsandbox3.inf.ed.ac.uk/site/stacks/index.htm?add=", vfb_id)
+    paste0("http://vfbsandbox3.inf.ed.ac.uk/site/stacks/index.htm?add=", paste0(vfb_id, collapse=','))
   }
 }
 
@@ -277,6 +277,14 @@ output$nblast_all_complete <- reactive({
 })
 outputOptions(output, 'nblast_all_complete', suspendWhenHidden=FALSE)
 
+output$nblast_results_all_viewer <- renderText({
+  scores <- nblast_scores()
+  if(is.null(scores)) return(NULL)
+  top10=sort(scores, decreasing=TRUE)[2:11]
+  top10n=names(top10)
+  vfb_link(top10n)
+})
+
 output$nblast_results_all_top10 <- renderTable({
   scores <- nblast_scores()
   if(is.null(scores)) return(NULL)
@@ -395,6 +403,14 @@ output$nblast_results_tracing <- renderPlot({
   nblast_results <- data.frame(scores=scores)
   p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
   p
+})
+
+output$nblast_results_tracing_viewer <- renderText({
+  scores <- nblast_scores_tracing()
+  if(is.null(scores)) return(NULL)
+  top10=sort(scores, decreasing=TRUE)[1:10]
+  top10n=fc_neuron(names(top10))
+  vfb_link(top10n)
 })
 
 output$nblast_results_tracing_top10 <- renderTable({
