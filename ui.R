@@ -47,7 +47,16 @@ shinyUI(fluidPage(
           </li>
         </ul>
       </div>
-    </nav>'
+    </nav>
+
+    <div class="alert alert-danger" role="alert" style="margin-top: 50px;" id="firefox-warning"><b>Warning!</b> This page works best in Firefox. Connection issues have been reported with Google Chrome and Safari. If you are using one of these browsers and the screen greys out, please refresh the page and try again.</div>
+    
+    <script type="text/javascript">
+    if(navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
+      document.getElementById("firefox-warning").style.display = "none";
+    }
+    </script>
+    '
   ),
   
   
