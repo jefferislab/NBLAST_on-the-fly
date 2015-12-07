@@ -1,7 +1,7 @@
 PackratFormat: 1.4
 PackratVersion: 0.4.4
-RVersion: 3.2.1
-Repos: CRAN=http://cran.rstudio.com
+RVersion: 3.2.2
+Repos: CRAN=https://cran.rstudio.com/
 
 Package: BH
 Source: CRAN
@@ -23,9 +23,9 @@ Package: NMF
 Source: CRAN
 Version: 0.20.6
 Hash: 632aad207ab2e551b33990c9f09ab8af
-Requires: RColorBrewer, cluster, colorspace, digest, doParallel,
-    foreach, ggplot2, gridBase, pkgmaker, registry, reshape2, rngtools,
-    stringr
+Requires: RColorBrewer, cluster, colorspace, digest, gridBase,
+    registry, foreach, stringr, doParallel, pkgmaker, reshape2,
+    rngtools, ggplot2
 
 Package: R6
 Source: CRAN
@@ -56,13 +56,13 @@ Hash: 193916618dce89b287517f457de8fa8b
 Package: RcppEigen
 Source: CRAN
 Version: 0.3.2.4.0
-Requires: Matrix, Rcpp
+Requires: Rcpp, Matrix
 
 Package: apcluster
 Source: CRAN
 Version: 1.4.1
 Hash: 074663f67fa1751ee0b3bbd419f0b199
-Requires: Matrix, Rcpp
+Requires: Rcpp, Matrix
 
 Package: bigmemory
 Source: CRAN
@@ -119,7 +119,7 @@ Package: doParallel
 Source: CRAN
 Version: 1.0.8
 Hash: e4a4e777f61e19769d00b129e2ef889f
-Requires: foreach, iterators
+Requires: iterators, foreach
 
 Package: downloader
 Source: CRAN
@@ -142,7 +142,7 @@ Package: flycircuit
 Source: github
 Version: 0.6.5
 Hash: 67073d989d575e532fe2a62bbc8f517c
-Requires: RCurl, apcluster, bigmemory, ff, nat, rappdirs, rgl, yaml
+Requires: rappdirs, rgl, yaml, bigmemory, ff, RCurl, apcluster, nat
 GithubRepo: flycircuit
 GithubUsername: jefferis
 GithubRef: master
@@ -158,7 +158,7 @@ Package: ggplot2
 Source: CRAN
 Version: 1.0.1
 Hash: 4aff1b269135bd2cdea378f4f2f2895e
-Requires: MASS, digest, gtable, plyr, proto, reshape2, scales
+Requires: MASS, digest, gtable, proto, plyr, scales, reshape2
 
 Package: gridBase
 Source: CRAN
@@ -186,7 +186,7 @@ Package: igraph
 Source: CRAN
 Version: 1.0.1
 Hash: 26ac36402e881905359daabfd9ba4057
-Requires: Matrix, NMF, irlba, magrittr
+Requires: magrittr, Matrix, irlba, NMF
 
 Package: irlba
 Source: CRAN
@@ -240,13 +240,13 @@ Package: nat
 Source: CRAN
 Version: 1.7.0
 Hash: 393a70a3e9ef1a43419b41fd22f3c39b
-Requires: digest, filehash, igraph, nabor, nat.utils, plyr, rgl, yaml
+Requires: digest, filehash, nat.utils, rgl, yaml, plyr, nabor, igraph
 
 Package: nat.flybrains
 Source: github
 Version: 1.5
 Hash: 885f5d8f3682c9036531723125872b63
-Requires: nat.templatebrains, rappdirs
+Requires: nat.templatebrains
 GithubRepo: nat.flybrains
 GithubUsername: jefferislab
 GithubRef: master
@@ -256,13 +256,13 @@ Package: nat.nblast
 Source: CRAN
 Version: 1.5
 Hash: b247c945a685beee3af39f252f5d3f22
-Requires: dendroextras, nabor, nat, plyr, rgl, spam
+Requires: dendroextras, rgl, spam, plyr, nabor, nat
 
 Package: nat.templatebrains
 Source: CRAN
 Version: 0.4.1
 Hash: 74f15164df63121cd384a7a423c05e44
-Requires: nat, rgl
+Requires: digest, rappdirs, rgl, igraph, nat
 
 Package: nat.utils
 Source: CRAN
@@ -278,7 +278,7 @@ Package: pkgmaker
 Source: CRAN
 Version: 0.22
 Hash: 2e5fc2a6b7eaeb1e1d397a8dc5f54480
-Requires: codetools, digest, registry, stringr, xtable
+Requires: codetools, digest, registry, xtable, stringr
 
 Package: plyr
 Source: CRAN
@@ -316,19 +316,19 @@ Package: rngtools
 Source: CRAN
 Version: 1.2.4
 Hash: 4db0661fe95ab6eb3d6339495bf22003
-Requires: digest, pkgmaker, stringr
+Requires: digest, stringr, pkgmaker
 
 Package: scales
 Source: CRAN
 Version: 0.2.5
 Hash: bec2b5457cce7f6b4922fc0610085a48
-Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+Requires: RColorBrewer, Rcpp, dichromat, labeling, plyr, munsell
 
 Package: shiny
 Source: CRAN
 Version: 0.12.1
 Hash: b0066db774f42c02416c5e2d49cd1a15
-Requires: R6, digest, htmltools, httpuv, jsonlite, mime, xtable
+Requires: R6, digest, jsonlite, mime, xtable, httpuv, htmltools
 
 Package: shinyRGL
 Source: github
