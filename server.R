@@ -138,9 +138,52 @@ output$all_distribution <- renderPlot({
 ############
 output$view3d_pairwise <- renderRglwidget({
 	clear3d()
-	plot3d(kcs20[4:7])
+	plot3d(FCWB)
+	frontalView()
+
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if ((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+
+	if(nzchar(query_neuron) & nzchar(target_neuron)) {
+		query_neuron <- fc_gene_name(query_neuron)
+		target_neuron <- fc_gene_name(target_neuron)
+		plot3d(query_neuron, col='red', soma=TRUE)
+		plot3d(target_neuron, col='blue', soma=TRUE)
+	}
+
 	rglwidget()
 })
+
+
+output$pairwise_query_target <- renderText({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if(nzchar(query_neuron) & nzchar(target_neuron)) {
+		paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
+	} else {
+		NULL
+	}
+})
+
+
+output$pairwise_results <- renderText({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if(query_neuron == "" | target_neuron == "") {
+		""
+	} else {
+		paste0("Raw score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall), "    |    Normalised score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall) / fc_nblast(fc_gene_name(query_neuron), fc_gene_name(query_neuron), scoremat=allbyall))
+	}
+})
+
+
+output$pairwise_nblast_complete <- reactive({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	return(ifelse(query_neuron == "" || target_neuron == "", FALSE, TRUE))
+})
+outputOptions(output, 'pairwise_nblast_complete', suspendWhenHidden=FALSE)
 
 
 

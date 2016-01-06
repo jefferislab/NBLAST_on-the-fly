@@ -50,10 +50,24 @@ tabPanel("One against all",
 tabPanel("Pairwise comparison",
 	sidebarLayout(
 		sidebarPanel(
+			h3("Instructions"),
+			HTML("Select two FlyCircuit neurons to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
+			h3("Query:"),
+			textInput("pairwise_query", "", ""),
+			h3("Target:"),
+			textInput("pairwise_target","", ""),
+			submitButton("NBLAST")
 		),
 
 		mainPanel(
-			rglwidgetOutput("view3d_pairwise")
+			h2("3D view"),
+			rglwidgetOutput("view3d_pairwise", width="800px", height="800px"),
+			conditionalPanel(condition = "output.pairwise_nblast_complete",
+				h2("NBLAST results"),
+				textOutput("pairwise_query_target"),
+				textOutput("pairwise_results"),
+				HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>")
+			)
 		)
 	)
 ),
