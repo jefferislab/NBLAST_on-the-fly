@@ -56,7 +56,7 @@ output$view3d_one_against_all <- renderRglwidget({
 	frontalView()
 
 	query_neuron <- input$all_query
-	if(query_neuron != "" && !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+	if(query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 	query_neuron <- fc_gene_name(query_neuron)
 
 	if (!is.na(query_neuron)) {
