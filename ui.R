@@ -23,7 +23,7 @@ tabPanel("One against all",
 		mainPanel(
 			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
 			h3("3D view"),
-			rglwidgetOutput("view3d_one_against_all"),
+			rglwidgetOutput("view3d_one_against_all", width="800px", height="800px"),
 			conditionalPanel(condition = "output.all_nblast_complete",
 				h2("NBLAST results"),
 				HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
