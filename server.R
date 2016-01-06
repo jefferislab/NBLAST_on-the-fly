@@ -1,6 +1,11 @@
 library(shiny)
 library(rglwidget)
 library(nat)
+library(nat.nblast)
+library(nat.flybrains)
+library(flycircuit)
+library(ggplot2)
+library(downloader)
 
 options(rgl.useNULL=TRUE)
 
