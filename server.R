@@ -6,6 +6,7 @@ library(nat.flybrains)
 library(flycircuit)
 library(ggplot2)
 library(downloader)
+library(vfbr)
 
 options(rgl.useNULL=TRUE)
 
@@ -203,11 +204,15 @@ output$view3d_tracing <- renderRglwidget({
 ########
 # GAL4 #
 ########
-output$view3d_gal4 <- renderRglwidget({
-	clear3d()
-	plot3d(kcs20[13:18])
-	rglwidget()
-})
+output$gal4_hits <- renderTable({
+	query_neuron <- fc_gene_name(input$gal4_query)
+	if(query_neuron == "") return(NULL)
+	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
+	if(is.null(scores)) return(NULL)
+	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
+	names(gmr_stack_links) <- rownames(scores)
+	data.frame(line=gmr_stack_links, score=scores$score)
+}, sanitize.text.function = force, include.rownames=FALSE)
 
 
 

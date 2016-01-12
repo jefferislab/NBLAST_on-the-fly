@@ -85,6 +85,16 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 	paste0(links, collapse="<span style='color: black;'>, </span>")
 }
 
+links_for_gmr <- function(gmrs, query) {
+	gmr_ids <- gmr_vfbid(gmrs)
+	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
+	hrefs <- sapply(gmr_ids, function(x) vfb_stack_url(c(x, query_id), clear=TRUE))
+	links <- paste0("<a href='", hrefs, "' target='_blank'>", gmrs, "</a>")
+	links[is.na(gmr_ids)] <- gmrs[is.na(gmr_ids)]
+	links
+}
+
+
 # Wrapper function for dotprops.character to handle some checks/restrictions that are quite specific to shiny usage
 dotprops_from_nrrd<-function(f, ...) {
 	ni <- read.im3d(f, ReadData = F)

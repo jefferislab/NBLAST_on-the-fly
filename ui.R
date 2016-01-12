@@ -98,10 +98,20 @@ tabPanel("Upload a tracing",
 tabPanel("GAL4",
 	sidebarLayout(
 		sidebarPanel(
+			h3("Instructions"),
+			HTML("Select a FlyCircuit neuron to compare against all FlyLight GAL4 lines, with NBLAST."),
+			h3("Query:"),
+			textInput("gal4_query", "", ""),
+			h3("Num hits:"),
+			sliderInput("gal4_n", "", 0, 100, 10, 1),
+			submitButton("NBLAST")
 		),
 
 		mainPanel(
-			rglwidgetOutput("view3d_gal4")
+			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: #000000; }", collapse="\n"), "</style>")),
+			h2("NBLAST results"),
+			h3("Top hits"),
+			tableOutput("gal4_hits")
 		)
 	)
 ),
