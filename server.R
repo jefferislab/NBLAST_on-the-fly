@@ -205,8 +205,11 @@ output$view3d_tracing <- renderRglwidget({
 # GAL4 #
 ########
 output$gal4_hits <- renderTable({
+	query_neuron <- input$gal4_query
+	if(!fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 	query_neuron <- fc_gene_name(input$gal4_query)
 	if(is.na(query_neuron)) return(NULL)
+
 	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
 	if(is.null(scores)) return(NULL)
 	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
