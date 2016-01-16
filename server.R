@@ -12,6 +12,25 @@ options(rgl.useNULL=TRUE)
 
 source("helper.R")
 
+subst <- function(strings, ..., digits=3) {
+  substitutions <- list(...)
+  names <- names(substitutions)
+  if (is.null(names)) names <- rep("", length(substitutions))
+  for (i in seq_along(names)) {
+    if ((n <- names[i]) == "")
+      n <- as.character(sys.call()[[i+2]])
+    value <- substitutions[[i]]
+    if (is.numeric(value))
+      value <- formatC(value, digits=digits, width=1)
+    strings <- gsub(paste("%", n, "%", sep=""), value, strings)
+  }
+  strings
+}
+environment(subst) <- asNamespace('rgl')
+assignInNamespace('subst', subst, ns='rgl')
+environment(subst) <- asNamespace('rglwidget')
+assignInNamespace('subst', subst, ns='rglwidget')
+
 shinyServer(function(input, output) {
 
 
@@ -206,9 +225,9 @@ output$view3d_tracing <- renderRglwidget({
 ########
 output$gal4_hits <- renderTable({
 	query_neuron <- input$gal4_query
-	if(!fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+	if(query_neuron == "") return(NULL)
 	query_neuron <- fc_gene_name(input$gal4_query)
-	if(is.na(query_neuron)) return(NULL)
+	if(is.na(query_neuron))  stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 
 	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
 	if(is.null(scores)) return(NULL)
@@ -217,7 +236,14 @@ output$gal4_hits <- renderTable({
 	data.frame(line=gmr_stack_links, score=scores$score)
 }, sanitize.text.function = force, include.rownames=FALSE)
 
+output$gal4_view_all <- renderText({
+	query_neuron <- fc_gene_name(input$gal4_query)
+	if(is.na(query_neuron)) return(NULL)
 
+	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
+
+	link_for_all_gmrs(scores$id, input$gal4_query)
+})
 
 
 #########

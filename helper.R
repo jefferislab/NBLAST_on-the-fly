@@ -94,6 +94,14 @@ links_for_gmr <- function(gmrs, query) {
 	links
 }
 
+link_for_all_gmrs <- function(gmrs, query) {
+	gmr_ids <- gmr_vfbid(gmrs)
+	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
+	hrefs <- vfb_stack_url(c(rev(gmr_ids[!is.na(gmr_ids)]), query_id), clear=TRUE)
+	links <- paste0("<a href='", hrefs, "' target='_blank'>View all these hits on VFB.</a>")
+	links
+}
+
 
 # Wrapper function for dotprops.character to handle some checks/restrictions that are quite specific to shiny usage
 dotprops_from_nrrd<-function(f, ...) {
