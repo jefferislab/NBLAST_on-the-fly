@@ -206,7 +206,7 @@ output$view3d_tracing <- renderRglwidget({
 ########
 output$gal4_hits <- renderTable({
 	query_neuron <- fc_gene_name(input$gal4_query)
-	if(query_neuron == "") return(NULL)
+	if(is.na(query_neuron)) return(NULL)
 	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
 	if(is.null(scores)) return(NULL)
 	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
