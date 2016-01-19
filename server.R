@@ -12,25 +12,6 @@ options(rgl.useNULL=TRUE)
 
 source("helper.R")
 
-subst <- function(strings, ..., digits=3) {
-  substitutions <- list(...)
-  names <- names(substitutions)
-  if (is.null(names)) names <- rep("", length(substitutions))
-  for (i in seq_along(names)) {
-    if ((n <- names[i]) == "")
-      n <- as.character(sys.call()[[i+2]])
-    value <- substitutions[[i]]
-    if (is.numeric(value))
-      value <- formatC(value, digits=digits, width=1)
-    strings <- gsub(paste("%", n, "%", sep=""), value, strings)
-  }
-  strings
-}
-environment(subst) <- asNamespace('rgl')
-assignInNamespace('subst', subst, ns='rgl')
-environment(subst) <- asNamespace('rglwidget')
-assignInNamespace('subst', subst, ns='rglwidget')
-
 shinyServer(function(input, output) {
 
 
