@@ -81,10 +81,33 @@ tabPanel("Pairwise comparison",
 tabPanel("Upload a tracing",
 	sidebarLayout(
 		sidebarPanel(
+			h3("Instructions"),
+			HTML("Upload a tracing or skeletonised neuron to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
+			h3("Query"),
+			fileInput('tracing_file', "Your tracing (e.g. swc) or skeletonised neuron (nrrd file):"),
+			selectInput('tracing_brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
+			checkboxInput("tracing_mirror", "Mirror?", value=FALSE),
+			br(),
+			checkboxInput('tracing_all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
+			br(),
+			checkboxInput('tracing_use_mean', label="Use mean scores", value=FALSE),
+			submitButton("NBLAST")
 		),
 
 		mainPanel(
-			rglwidgetOutput("view3d_tracing")
+			h2("3D view"),
+			rglwidgetOutput("view3d_tracing", width="800px", height="800px"),
+			conditionalPanel(condition = "output.tracing_nblast_complete",
+				h2("NBLAST results"),
+				HTML("<a href='http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/www/how/'>What do these scores mean?</a>"),
+				br(),
+				downloadButton('tracing_nblast_results_download', 'Download all scores as CSV'),
+				h3("Top 10 hits"),
+				htmlOutput("tracing_nblast_results_viewer"),
+				tableOutput("tracing_nblast_results_top10"),
+				h3("Score distribution"),
+				plotOutput("tracing_nblast_results_plot")
+			)
 		)
 	)
 ),
