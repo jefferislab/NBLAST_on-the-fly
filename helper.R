@@ -89,7 +89,7 @@ links_for_gmr <- function(gmrs, query) {
 	gmr_ids <- gmr_vfbid(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
 	hrefs <- sapply(gmr_ids, function(x) vfb_stack_url(c(x, query_id), clear=TRUE))
-	links <- paste0("<a href='", hrefs, "' target='_blank'>", gmrs, "</a>")
+	links <- paste0("<a href='", hrefs, "' target='_blank'>", paste0("GMR_", gmrs), "</a>")
 	links[is.na(gmr_ids)] <- gmrs[is.na(gmr_ids)]
 	links
 }
