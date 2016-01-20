@@ -49,7 +49,7 @@ vfb_url <- function(neuron_name, style=c("dev", "old")) {
 
 vfb_link <- function(neuron_name) {
 	url <- vfb_url(neuron_name)
-	paste0("<a target='_blank' href='", url, "'>View in VFB stack browser</a>")
+	paste0("<a target='_blank' href='", url, "'>View in Virtual Fly Brain stack browser</a>")
 }
 
 cluster_link <- function(neuron_name) {
@@ -98,7 +98,7 @@ link_for_all_gmrs <- function(gmrs, query) {
 	gmr_ids <- gmr_vfbid(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
 	hrefs <- vfb_stack_url(c(rev(gmr_ids[!is.na(gmr_ids)]), query_id), clear=TRUE)
-	links <- paste0("<a href='", hrefs, "' target='_blank'>View all these hits on VFB.</a>")
+	links <- paste0("<a href='", hrefs, "' target='_blank'>View all these hits on Virtual Fly Brain.</a>")
 	links
 }
 
