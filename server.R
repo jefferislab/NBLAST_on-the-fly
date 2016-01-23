@@ -12,7 +12,33 @@ options(rgl.useNULL=TRUE)
 
 source("helper.R")
 
+# URL synching
+url_fields_to_sync <- c("all_query")
+
 shinyServer(function(input, output) {
+
+################
+# URL synching #
+################
+firstTime <- TRUE
+
+newHash <- function() {
+	newHash <- paste(collapse=",", Map(function(field) { paste(sep="=", field, input[[field]]) }, url_fields_to_sync))
+	return(
+		if (!firstTime) {
+			newHash
+		} else {
+			if (is.null(input$hash)) {
+				NULL
+			} else {
+				firstTime <<- FALSE;
+				isolate(input$hash)
+			}
+		}
+	)
+}
+
+output$hash <- renderText(newHash())
 
 
 

@@ -1,6 +1,11 @@
 library(shiny)
 library(rglwidget)
 
+# URL synching
+hashProxy <- function(inputoutputID) {
+	div(id=inputoutputID,class=inputoutputID,tag("div",""));
+}
+
 shinyUI(navbarPage("NBLAST on-the-fly",
 
 
@@ -12,6 +17,8 @@ shinyUI(navbarPage("NBLAST on-the-fly",
 tabPanel("One against all",
 	sidebarLayout(
 		sidebarPanel(
+			includeHTML("url.js"),
+			hashProxy("hash"),
 			h3("Instructions"),
 			HTML("Select a FlyCircuit neuron to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
 			h3("Query:"),
