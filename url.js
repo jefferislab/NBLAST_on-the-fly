@@ -1,8 +1,8 @@
 <script type="text/javascript">
 (function(){
- 
+
   this.countValue=0;
-  
+
   var changeInputsFromHash = function(newHash) {
     // get hash OUTPUT
     var hashVal = $(newHash).data().shinyInputBinding.getValue($(newHash))
@@ -12,9 +12,9 @@
     // find input bindings corresponding to them
     keyVals.map(function(x) {
       var el=$("#"+x[0])
-      
+
       if (el.length > 0 && el.val() != x[1]) {
-      
+
         console.log("Attempting to update input " + x[0] + " with value " + x[1]);
         if (el.attr("type") == "checkbox") {
             el.prop('checked',x[1]=="TRUE")
@@ -25,14 +25,14 @@
           // This case should be setValue but it's not implemented in shiny
           el.slider("value",x[1])
           //el.change()
-        } else { 
+        } else {
             el.data().shinyInputBinding.setValue(el[0],x[1])
             el.change()
         }
       }
     })
   }
-  
+
   var HashOutputBinding = new Shiny.OutputBinding();
   $.extend(HashOutputBinding, {
     find: function(scope) {
@@ -48,7 +48,7 @@
     }
   });
   Shiny.outputBindings.register(HashOutputBinding);
-  
+
   var HashInputBinding = new Shiny.InputBinding();
   $.extend(HashInputBinding, {
     find: function(scope) {
@@ -67,7 +67,7 @@
     }
   });
   Shiny.inputBindings.register(HashInputBinding);
- 
-  
+
+
 })()
 </script>

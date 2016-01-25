@@ -1,445 +1,366 @@
-if(!interactive()) {
-  message("rgl use NULL device to avoid problems on headless servers")
-  options(rgl.useNULL=TRUE)
-} else {
-  message("interactive mode - full rgl")
-}
-library(nat)
-library(nat.flybrains)
-library(nat.nblast)
-library(flycircuit)
 library(shiny)
-library(shinyRGL)
-library(shinysky)
+library(rglwidget)
+library(nat)
+library(nat.nblast)
+library(nat.flybrains)
+library(flycircuit)
 library(ggplot2)
 library(downloader)
+library(vfbr)
+
+options(rgl.useNULL=TRUE)
+
+source("helper.R")
 
 # URL synching
-url_fields_to_sync <- c("query_all")
+url_fields_to_sync <- c("all_query")
 
-# Load dps object for plotting neurons
-dps <- read.neuronlistfh(file.path(getOption('flycircuit.datadir'), 'dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds'))
-
-# Attach the all-by-all score matrix and load into memory
-allbyall <- fc_attach_bigmat("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b")
-
-# Load VFB ID lookup table
-vfb_ids=readRDS('vfb_ids.rds')
-
-# Load VFB annotation ID lookup table
-vfb_annotations <- read.table("annotation_map.tsv", header=TRUE, sep="\t", quote = "")
-
-# Load the affinity propagation results
-apres16k.p0 <- load_fcdata("apres16k.p0")
-apresdf <- as.data.frame(apres16k.p0)
-exemplars <- levels(apresdf$exemplar)
-
-# Define a function for a frontal view of the brain
-frontalView<-function(zoom=0.6){
-  um=structure(c(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1), .Dim = c(4L, 4L))
-  rgl.viewpoint(userMatrix=um,zoom=zoom)
-}
-
-# We will use this downsampled FCWB surface instead of the normal one
-FCWB.surf <- read.hxsurf("FCWB.smooth.surf")
-
-# Overwrite RGL's inRows function to reduce the number of digits from 7 to 5
-inRows <- function(values, perrow, leadin="\t", digits=5) {
-  if (is.matrix(values)) values <- t(values)
-  values <- c(values)
-  if (is.numeric(values)) values <- formatC(values, digits = digits, width = 1)
-  len <- length(values)
-  if (len%%perrow != 0) values <- c(values, rep("PADDING", perrow - len%%perrow))
-  values <- matrix(values, ncol = perrow, byrow = TRUE)
-  lines <- paste(leadin, apply(values, 1, function(row) paste(row, collapse = ", ")))
-  lines[length(lines)] <- gsub(", PADDING", "", lines[length(lines)])
-  paste(lines, collapse = ",\n")
-}
-environment(inRows) <- asNamespace('rgl')
-assignInNamespace('inRows', inRows, ns='rgl')
-
-# Functions for converting gene names to FlyCircuit.tw URLs and making links
-flycircuit_url <- function(neuron_name) {
-  neuron_name <- fc_neuron(neuron_name)
-  paste0("http://flycircuit.tw/modules.php?name=clearpage&op=detail_table&neuron=", neuron_name)
-}
-
-flycircuit_link <- function(neuron_name) {
-  url <- flycircuit_url(neuron_name)
-  paste0("<a target='_blank' href='", url, "'>View on FlyCircuit.tw</a>")
-}
-
-vfb_url <- function(neuron_name, style=c("dev", "old")) {
-  style=match.arg(style, c("dev", "old"))
-  vfb_id <- as.character(vfb_ids[vfb_ids$Name %in% neuron_name, 'vfbid'])
-  if(style=='old'){
-    paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
-  } else {
-    paste0("http://vfbsandbox3.inf.ed.ac.uk/site/stacks/index.htm?add=", paste0(vfb_id, collapse=','))
-  }
-}
-
-vfb_link <- function(neuron_name) {
-  url <- vfb_url(neuron_name)
-  paste0("<a target='_blank' href='", url, "'>View in VFB stack browser</a>")
-}
-
-cluster_link <- function(neuron_name) {
-  cluster <- apresdf[fc_gene_name(neuron_name), 'cluster']
-  url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
-  paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
-}
-
-link_cluster <- function(cluster) {
-  url <- paste0("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/clusters/clusters/", cluster, "/")
-  paste0("<a target='_blank' href='", url, "'>", cluster, "</a>")
-}
-
-## Annotation data
-tdf <- annotation[annotation$annotation_class%in%c('NeuronType','ALGlomerulus'), ]
-tdf$gene_name <- fc_gene_name(tdf$neuron_idid)
-
-type_for_neuron<-function(n) {
-  gns=fc_gene_name(n)
-  type=tdf[tdf$gene_name == gns, 'text']
-  unique(type)
-}
-
-link_for_neuron_type <- function(type, style=c("dev", "old")) {
-  style <- match.arg(style, c("dev", "old"))
-  links <- sapply(type, function(x) {
-    ffbt <- vfb_annotations[vfb_annotations$a.text == x, 'class_id']
-    if(style == "old") url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
-    else url <- paste0("http://vfbsandbox3.inf.ed.ac.uk/site/tools/anatomy_finder/index.htm?id=", ffbt)
-    link <- ifelse(length(ffbt) == 0, paste0("<span style='color: black;'>", x, "</span>"), paste0("<a target='_blank' href='", url, "'>", x, "</a>"))
-    link
-  })
-  paste0(links, collapse="<span style='color: black;'>, </span>")
-}
-
-#' Wrapper function for dotprops.character to handle some checks/restrictions
-#' that are quite specific to shiny usage
-dotprops_from_nrrd<-function(f, ...) {
-  ni <- read.im3d(f, ReadData = F)
-  
-  imsize=prod(unlist(attr(ni,'datablock')[c("n","size")]))
-  if(imsize > 150e6) 
-    stop("Nrrd image files must be <= 150 Mb uncompressed. ",
-         "Try downsampling to ~ 1 x 1 x 1 µm voxel size.")
-  
-  # read the image
-  im=read.im3d(f, ReadByteAsRaw = TRUE)
-  coords=ind2coord(im)
-  if(nrow(coords) > 1e5)
-    stop("Nrrd image contains > 100,000 non-zero voxels. Please use a ",
-         "skeletonised/binarised image as produced by http://fiji.sc/Skeletonize3D")
-  
-  dotprops(coords, ...)
-}
-
-shinyServer(function(input, output, session) {
+shinyServer(function(input, output) {
 
 ################
 # URL synching #
 ################
 firstTime <- TRUE
-output$hash <- reactiveText(function() {
-  newHash <- paste(collapse=",", Map(function(field) {
-                    paste(sep="=", field, input[[field]])
-                  },
-                  url_fields_to_sync))
-  return(
-    if (!firstTime) {
-      newHash
-    } else {
-      if (is.null(input$hash)) {
-        NULL
-      } else {
-        firstTime <<- FALSE;
-        isolate(input$hash)
-      }
-    }
-  )
-})
-  
-#######################
-# Pairwise comparison #
-#######################
-output$brain3d_one <- renderWebGL({
-  query_neuron <- input$query_one
-  target_neuron <- input$target_one
-  if((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
-  if(nzchar(query_neuron) && nzchar(target_neuron)) {
-    clear3d()
-    plot3d(dps[fc_gene_name(query_neuron)], col='red', soma=TRUE)
-    plot3d(dps[fc_gene_name(target_neuron)], col='blue', soma=TRUE)
-  }
-  plot3d(FCWB.surf, col='grey', alpha=0.3)
-  frontalView()
-})
 
-output$nblast_one_query_target <- renderText({
-  query_neuron <- input$query_one
-  target_neuron <- input$target_one
-  if(nzchar(query_neuron) && nzchar(target_neuron)) {
-    paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
-  } else {
-    NULL
-  }
-})
+newHash <- function() {
+	newHash <- paste(collapse=",", Map(function(field) { paste(sep="=", field, input[[field]]) }, url_fields_to_sync))
+	return(
+		if (!firstTime) {
+			newHash
+		} else {
+			if (is.null(input$hash)) {
+				NULL
+			} else {
+				firstTime <<- FALSE;
+				isolate(input$hash)
+			}
+		}
+	)
+}
 
-output$nblast_results_one <- renderText({
-  query_neuron <- input$query_one
-  target_neuron <- input$target_one
-  if(query_neuron == "" || target_neuron == "") {
-    ""
-  } else {
-    paste0("Raw score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall), "    |    Normalised score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall) / fc_nblast(fc_gene_name(query_neuron), fc_gene_name(query_neuron), scoremat=allbyall))
-  }
-})
+output$hash <- renderText(newHash())
+
 
 
 
 ###################
 # One against all #
 ###################
-output$brain3d_all <- renderWebGL({
-  query_neuron <- query_neuron()
-  if(nzchar(query_neuron)) {
-    if(fc_gene_name(query_neuron) %in% names(dps)) {
-    clear3d()
-    plot3d(dps[fc_gene_name(query_neuron)], col='black', lwd=2, soma=TRUE)
-    scores <- sort(nblast_scores(), decreasing=TRUE)
-    plot3d(dps[fc_gene_name(names(scores[2:11]))], col=rainbow(10), soma=TRUE)
-    }
-  }
-  plot3d(FCWB.surf, col='grey', alpha=0.3)
-  frontalView()
-  if(query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+all_scores <- reactive({
+	query_neuron <- fc_gene_name(input$all_query)
+	if (is.na(query_neuron)) return(NULL)
+	scores <- list()
+
+	withProgress({
+		for (i in 1:10) {
+			chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
+			if(!input$all_use_mean) {
+				scores[[i]] <- fc_nblast(query_neuron, names(dps)[chunk], scoremat=allbyall)
+				} else {
+					scores[[i]] <- fc_nblast(query_neuron, names(dps)[chunk], scoremat=allbyall, normalisation='mean')
+				}
+			setProgress(value=i)
+		}
+	}, message="NBLASTing...")
+
+	scores <- unlist(scores)
+	names(scores) <- fc_neuron(names(scores))
+	scores <- sort(scores, decreasing=TRUE)
+	scores
 })
 
-query_neuron <- reactive({
-  query_neuron <- input$query_all
-  if(query_neuron == "") return("")
-  query_neuron
+
+output$all_nblast_complete <- reactive({
+	scores <- all_scores()
+	return(ifelse(is.null(scores), FALSE, TRUE))
+})
+outputOptions(output, 'all_nblast_complete', suspendWhenHidden=FALSE)
+
+
+output$view3d_one_against_all <- renderRglwidget({
+	clear3d()
+	plot3d(FCWB)
+	frontalView()
+
+	query_neuron <- input$all_query
+	if(query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+	query_neuron <- fc_gene_name(query_neuron)
+
+	if (!is.na(query_neuron)) {
+		plot3d(query_neuron, col='black', lwd=2, soma=TRUE)
+		scores <- all_scores()
+		plot3d(fc_gene_name(names(scores[2:11])), soma=TRUE)
+	}
+	rglwidget()
 })
 
-nblast_scores <- reactive({
-  query_neuron <- query_neuron()
-  if(query_neuron == "") return(NULL)
-  if(!fc_gene_name(query_neuron) %in% names(dps)) return(NULL)
-  scores <- list()
-  withProgress(min=1, max=10, message="NBLAST in progress", expr={
-    for(i in 1:10) {
-      chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-      if(!input$use_mean) {
-        scores[[i]] <- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall)
-      } else {
-        scores[[i]] <- fc_nblast(fc_gene_name(query_neuron), names(dps)[chunk], scoremat=allbyall, normalisation='mean')
-      }
-      setProgress(value=i)
-    }
-  })
-  scores <- unlist(scores)
-  names(scores) <- fc_neuron(names(scores))
-  scores
-})
 
-output$nblast_all_query <- renderText({
-  if(query_neuron() == "") return(NULL)
-  paste0("Query: ", query_neuron())
-})
-
-output$nblast_results_all <- renderPlot({
-  scores <- nblast_scores()
-  if(is.null(scores)) return(NULL)
-  nblast_results <- data.frame(scores=scores)
-  p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
-  p
-})
-
-output$nblast_results_all_download <- downloadHandler(
-  filename = function() {  paste0(input$query_all, '_nblast_results_', Sys.Date(), '.csv') },
-  content = function(file) {
-    scores <- nblast_scores()
-    score_table <- data.frame(neuron=names(scores), 
-                              raw=scores, 
-                              norm=scores/fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall))
-    score_table$type=sapply(score_table$neuron, function(x) paste0(type_for_neuron(x), collapse=", "))
-    colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score", "Neuron Type")
-    write.csv(score_table, file, row.names=FALSE)
-  }
+output$all_download <- downloadHandler(
+	filename = function() { paste0(input$all_query, '_nblast_results_', Sys.Date(), '.csv') },
+	content = function(file) {
+		query_neuron <- fc_gene_name(input$all_query)
+		scores <- all_scores()
+		score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/fc_nblast(query_neuron, query_neuron, scoremat=allbyall))
+		score_table$type=sapply(score_table$neuron, function(x) paste0(type_for_neuron(x), collapse=", "))
+		colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score", "Neuron Type")
+		write.csv(score_table, file, row.names=FALSE)
+	}
 )
 
-output$nblast_all_complete <- reactive({
-  scores <- nblast_scores()
-  return(ifelse(is.null(scores), FALSE, TRUE))
-})
-outputOptions(output, 'nblast_all_complete', suspendWhenHidden=FALSE)
 
-output$nblast_results_all_viewer <- renderText({
-  scores <- nblast_scores()
-  if(is.null(scores)) return(NULL)
-  top10=sort(scores, decreasing=TRUE)[2:11]
-  top10n=names(top10)
-  vfb_link(top10n)
+output$all_vfb_viewer <- renderText({
+	scores <- all_scores()
+	if(is.null(scores)) return(NULL)
+	top10n <- names(scores[2:11])
+	vfb_link(top10n)
 })
 
-output$nblast_results_all_top10 <- renderTable({
-  scores <- nblast_scores()
-  if(is.null(scores)) return(NULL)
-  top10=sort(scores, decreasing=TRUE)[2:11]
-  top10n=names(top10)
-  self_score=fc_nblast(fc_gene_name(query_neuron()), fc_gene_name(query_neuron()), scoremat=allbyall)[1]
-  sdf=data.frame(scores=top10, 
-                 normalised_scores=top10/self_score,
-                 flycircuit=sapply(top10n, flycircuit_link), 
-                 vfb=sapply(top10n, vfb_link), 
-                 cluster=sapply(top10n, cluster_link),
-                 type=sapply(top10n, function(x) link_for_neuron_type(type_for_neuron(x))))
-  if(!input$use_mean) {
-    sdf
-  } else {
-    sdf$normalised_scores=NULL
-    sdf
-  }
+
+output$all_top10_hits <- renderTable({
+	query_neuron <- fc_gene_name(input$all_query)
+	scores <- all_scores()
+	if(is.null(scores)) return(NULL)
+	top10 <- scores[2:11]
+	top10n <- names(top10)
+	self_score <- fc_nblast(query_neuron, query_neuron, scoremat=allbyall)[1]
+
+	sdf <- data.frame(scores=top10, normalised_scores=top10/self_score, flycircuit=sapply(top10n, flycircuit_link), vfb=sapply(top10n, vfb_link), cluster=sapply(top10n, cluster_link), type=sapply(top10n, function(x) link_for_neuron_type(type_for_neuron(x))))
+
+	if(!input$all_use_mean) {
+		sdf
+	} else {
+		sdf$normalised_scores=NULL
+		sdf
+	}
 }, sanitize.text.function = force)
 
-output$nblast_results_all_top10_clusters <- renderTable({
-  scores <- nblast_scores()
-  if(is.null(scores)) return(NULL)
-  scores <- sort(scores, decreasing=TRUE)
-  clusters <- apresdf[fc_gene_name(names(scores)), 'cluster']
-  unique_clusters <- unique(clusters[-1])[1:10]
-  scores <- scores[names(scores) != query_neuron()]
-  names(unique_clusters) <- sapply(unique_clusters, function(x) names(scores[which(x == clusters)[1]]))
-  clusters <- unique_clusters
-  query_gn=fc_gene_name(query_neuron())
-  self_score=fc_nblast(query_gn, query_gn, scoremat=allbyall)[1]
-  data.frame(cluster=sapply(clusters[1:10], link_cluster), 
-             scores=scores[names(clusters)[1:10]], 
-             normalised_scores=scores[names(clusters)[1:10]]/self_score)
+
+output$all_top10_clusters <- renderTable({
+	query_neuron <- fc_gene_name(input$all_query)
+	scores <- all_scores()
+	if(is.null(scores)) return(NULL)
+	clusters <- apresdf[fc_gene_name(names(scores)), 'cluster']
+	unique_clusters <- unique(clusters[-1])[1:10]
+	scores <- scores[names(scores) != query_neuron]
+	names(unique_clusters) <- sapply(unique_clusters, function(x) names(scores[which(x == clusters)[1]]))
+	clusters <- unique_clusters
+	self_score <- fc_nblast(query_neuron, query_neuron, scoremat=allbyall)[1]
+	data.frame(cluster=sapply(clusters[1:10], link_cluster), scores=scores[names(clusters)[1:10]], normalised_scores=scores[names(clusters)[1:10]]/self_score)
 }, sanitize.text.function = force, include.rownames=FALSE)
 
 
-
-################
-# User tracing #
-################
-output$brain3d_tracing <- renderWebGL({
-  query_neuron <- tracing()
-  if(!is.null(query_neuron)) {
-    plot3d(query_neuron, col='black', lwd=2, soma=TRUE)
-    scores <- nblast_scores_tracing()
-    scores <- sort(scores, decreasing=TRUE)
-    plot3d(dps[names(scores)[1:10]], soma=TRUE)
-  }
-  plot3d(FCWB.surf, col='grey', alpha=0.3)
-  frontalView()
+output$all_distribution <- renderPlot({
+	scores <- all_scores()
+	if(is.null(scores)) return(NULL)
+	nblast_results <- data.frame(scores=scores)
+	p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+	p
 })
 
+
+
+
+############
+# Pairwise #
+############
+output$view3d_pairwise <- renderRglwidget({
+	clear3d()
+	plot3d(FCWB)
+	frontalView()
+
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if ((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+
+	if(nzchar(query_neuron) & nzchar(target_neuron)) {
+		query_neuron <- fc_gene_name(query_neuron)
+		target_neuron <- fc_gene_name(target_neuron)
+		plot3d(query_neuron, col='red', soma=TRUE)
+		plot3d(target_neuron, col='blue', soma=TRUE)
+	}
+
+	rglwidget()
+})
+
+
+output$pairwise_query_target <- renderText({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if(nzchar(query_neuron) & nzchar(target_neuron)) {
+		paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
+	} else {
+		NULL
+	}
+})
+
+
+output$pairwise_results <- renderText({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	if(query_neuron == "" | target_neuron == "") {
+		""
+	} else {
+		paste0("Raw score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall), "    |    Normalised score: ", fc_nblast(fc_gene_name(query_neuron), fc_gene_name(target_neuron), scoremat=allbyall) / fc_nblast(fc_gene_name(query_neuron), fc_gene_name(query_neuron), scoremat=allbyall))
+	}
+})
+
+
+output$pairwise_nblast_complete <- reactive({
+	query_neuron <- input$pairwise_query
+	target_neuron <- input$pairwise_target
+	return(ifelse(query_neuron == "" || target_neuron == "", FALSE, TRUE))
+})
+outputOptions(output, 'pairwise_nblast_complete', suspendWhenHidden=FALSE)
+
+
+
+
+####################
+# Upload a tracing #
+####################
 tracing <- reactive({
-  template_brain <- input$brain
-  if(template_brain == 'Select a template brain') return(NULL)
-  
-  isolate({
-  query_neuron <- input$tracing_file
-  if(is.null(query_neuron)) return(NULL)
-  if(grepl("\\.nrrd", query_neuron$name)) {
-    # TODO come up with a heuristic to choose the number of neighbours (k)
-    # based on the voxel dimensions
-    tracing_neuron <- dotprops_from_nrrd(query_neuron$datapath, k=10)
-  } else {
-    if (grepl("\\.swc", query_neuron$name))
-      tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
-    else tracing_neuron <- read.neuron(query_neuron$datapath)
-    
-    tracing_neuron <- dotprops(tracing_neuron, k=5, resample=1)
-  }
-  })
+	template_brain <- input$tracing_brain
+	if(template_brain == 'Select a template brain') return(NULL)
 
-  message(template_brain)
-  if(template_brain != "FCWB") {
-    template_brain <- get(template_brain)
-    tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
-  }
-  if(input$mirror)
-    tracing_neuron <- mirror_brain(tracing_neuron, FCWB)
-  tracing_neuron
+	isolate({
+	query_neuron <- input$tracing_file
+	if(is.null(query_neuron)) return(NULL)
+	if(grepl("\\.nrrd", query_neuron$name)) {
+		# TODO come up with a heuristic to choose the number of neighbours (k)
+		# based on the voxel dimensions
+		tracing_neuron <- dotprops_from_nrrd(query_neuron$datapath, k=10)
+	} else {
+		if (grepl("\\.swc", query_neuron$name))
+			tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
+		else tracing_neuron <- read.neuron(query_neuron$datapath)
+		tracing_neuron <- dotprops(tracing_neuron, k=5, resample=1)
+	}
+	})
+
+	if(template_brain != "FCWB") {
+		template_brain <- get(template_brain)
+		tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
+	}
+	if(input$tracing_mirror)
+		tracing_neuron <- mirror_brain(tracing_neuron, FCWB)
+	tracing_neuron
 })
 
-nblast_scores_tracing <- reactive({
-  query_neuron <- tracing()
-  if(is.null(query_neuron)) return(NULL)
-  scores <- list()
-withProgress(min=1, max=10, message="NBLAST in progress", detail="This may take a few minutes", expr={
-    for(i in 1:10) {
-      if(!input$all_neurons) {
-        chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-        if(input$use_mean_tracing) {
-          scores[[i]] <- (nblast(dotprops(query_neuron), dps[exemplars[chunk]], normalised=TRUE) + 
-                            nblast(dps[exemplars[chunk]], dotprops(query_neuron), normalised=TRUE)) / 2
-        } else {
-          scores[[i]] <- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
-        }
-      } else {
-        chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-        if(input$use_mean_tracing) {
-          scores[[i]] <- (nblast(dotprops(query_neuron), dps[chunk], normalised=TRUE) 
-                          + nblast(dps[chunk], dotprops(query_neuron), normalised=TRUE)) / 2
-        } else {
-          scores[[i]] <- nblast(dotprops(query_neuron), dps[chunk])
-        }
-      }
-      setProgress(value=i)
-    }
-  })
-  unlist(scores)
+tracing_nblast_scores <- reactive({
+	query_neuron <- tracing()
+	if(is.null(query_neuron)) return(NULL)
+	scores <- list()
+	withProgress(min=1, max=10, message="NBLAST in progress", expr={
+		for(i in 1:10) {
+			if(!input$tracing_all_neurons) {
+				chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
+				if(input$tracing_use_mean) {
+					scores[[i]] <- (nblast(dotprops(query_neuron), dps[exemplars[chunk]], normalised=TRUE) + nblast(dps[exemplars[chunk]], dotprops(query_neuron), normalised=TRUE)) / 2
+				} else {
+					scores[[i]] <- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
+				}
+			} else {
+				chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
+				if(input$tracing_use_mean) {
+					scores[[i]] <- (nblast(dotprops(query_neuron), dps[chunk], normalised=TRUE) + nblast(dps[chunk], dotprops(query_neuron), normalised=TRUE)) / 2
+				} else {
+					scores[[i]] <- nblast(dotprops(query_neuron), dps[chunk])
+				}
+			}
+			setProgress(value=i)
+		}
+	})
+	unlist(scores)
 })
 
-output$nblast_results_tracing <- renderPlot({
-  scores <- nblast_scores_tracing()
-  if(is.null(scores)) return(NULL)
-  nblast_results <- data.frame(scores=scores)
-  p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
-  p
+output$tracing_nblast_results_plot <- renderPlot({
+	scores <- tracing_nblast_scores()
+	if(is.null(scores)) return(NULL)
+	nblast_results <- data.frame(scores=scores)
+	p <- ggplot(nblast_results, aes(x=scores)) + geom_histogram(binwidth=diff(range(nblast_results$scores))/100) + xlab("NBLAST score") + ylab("Frequency density") + geom_vline(xintercept=0, colour='red')
+	p
 })
 
-output$nblast_results_tracing_viewer <- renderText({
-  scores <- nblast_scores_tracing()
-  if(is.null(scores)) return(NULL)
-  top10=sort(scores, decreasing=TRUE)[1:10]
-  top10n=fc_neuron(names(top10))
-  vfb_link(top10n)
+output$tracing_nblast_results_viewer <- renderText({
+	scores <- tracing_nblast_scores()
+	if(is.null(scores)) return(NULL)
+	top10 <- sort(scores, decreasing=TRUE)[1:10]
+	top10n <- fc_neuron(names(top10))
+	vfb_link(top10n)
 })
 
-output$nblast_results_tracing_top10 <- renderTable({
-  query_neuron <- tracing()
-  scores <- nblast_scores_tracing()
-  if(is.null(scores)) return(NULL)
-  names(scores) <- fc_neuron(names(scores))
-  data.frame(scores=sort(scores, decreasing=TRUE)[1:10], 
-             normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10],
-             flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), 
-             vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), 
-             cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), 
-             type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), function(x) link_for_neuron_type(type_for_neuron(x))))
+output$tracing_nblast_results_top10 <- renderTable({
+	query_neuron <- tracing()
+	scores <- tracing_nblast_scores()
+	if(is.null(scores)) return(NULL)
+	names(scores) <- fc_neuron(names(scores))
+	data.frame(scores=sort(scores, decreasing=TRUE)[1:10],normalised_scores=sort(scores/nblast(dotprops(query_neuron), dotprops(query_neuron)), decreasing=TRUE)[1:10], flycircuit=sapply(names(sort(scores, decreasing=TRUE)[1:10]), flycircuit_link), vfb=sapply(names(sort(scores, decreasing=TRUE)[1:10]), vfb_link), cluster=sapply(names(sort(scores, decreasing=TRUE)[1:10]), cluster_link), type=sapply(names(sort(scores, decreasing=TRUE)[1:10]), function(x) link_for_neuron_type(type_for_neuron(x))))
 }, sanitize.text.function = force)
 
-output$nblast_results_tracing_download <- downloadHandler(
-  filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
-  content = function(file) {
-    scores <- nblast_scores_tracing()
-    score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), function(x) paste0(type_for_neuron(x), collapse=", ")))
-    colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score")
-    write.csv(score_table, file, row.names=FALSE)
-  }
+output$tracing_nblast_results_download <- downloadHandler(
+	filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
+	content = function(file) {
+		scores <- tracing_nblast_scores()
+	score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), function(x) paste0(type_for_neuron(x), collapse=", ")))
+		colnames(score_table) <- c("Neuron", "Raw NBLAST score", "Normalised NBLAST score", "Type")
+		write.csv(score_table, file, row.names=FALSE)
+	}
 )
 
-output$nblast_tracing_complete <- reactive({
-  scores <- nblast_scores_tracing()
-  return(ifelse(is.null(scores), FALSE, TRUE))
+output$tracing_nblast_complete <- reactive({
+	scores <- tracing_nblast_scores()
+	return(ifelse(is.null(scores), FALSE, TRUE))
 })
-outputOptions(output, 'nblast_tracing_complete', suspendWhenHidden=FALSE)
+outputOptions(output, 'tracing_nblast_complete', suspendWhenHidden=FALSE)
+
+output$view3d_tracing <- renderRglwidget({
+	clear3d()
+	query_neuron <- tracing()
+	if(!is.null(query_neuron)) {
+		plot3d(query_neuron, col='black', lwd=2, soma=TRUE)
+		scores <- tracing_nblast_scores()
+		scores <- sort(scores, decreasing=TRUE)
+		plot3d(dps[names(scores)[1:10]], soma=TRUE)
+	}
+	plot3d(FCWB)
+	frontalView()
+	rglwidget()
+})
+
+
+
+
+########
+# GAL4 #
+########
+output$gal4_hits <- renderTable({
+	query_neuron <- input$gal4_query
+	if(query_neuron == "") return(NULL)
+	query_neuron <- fc_gene_name(input$gal4_query)
+	if(is.na(query_neuron))  stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
+
+	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
+	if(is.null(scores)) return(NULL)
+	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
+	names(gmr_stack_links) <- rownames(scores)
+	data.frame(line=gmr_stack_links, score=scores$score)
+}, sanitize.text.function = force, include.rownames=FALSE)
+
+output$gal4_view_all <- renderText({
+	query_neuron <- fc_gene_name(input$gal4_query)
+	if(is.na(query_neuron)) return(NULL)
+
+	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
+
+	link_for_all_gmrs(scores$id, input$gal4_query)
+})
+
+
+#########
+# About #
+#########
+
+
+
 
 })
