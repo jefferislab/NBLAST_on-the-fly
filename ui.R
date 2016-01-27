@@ -30,6 +30,8 @@ tabPanel("One against all",
 		mainPanel(
 			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: ", rainbow(10, alpha=NULL), "; }", collapse="\n"), "</style>")),
 			h3("3D view"),
+			includeCSS("loader.css"),
+			HTML("<div class='loader' style='position: absolute; left: 400px; top: 300px; z-index: -10000;'>Loading...</div>"),
 			rglwidgetOutput("view3d_one_against_all", width="800px", height="800px"),
 			conditionalPanel(condition = "output.all_nblast_complete",
 				h2("NBLAST results"),
@@ -68,6 +70,8 @@ tabPanel("Pairwise comparison",
 
 		mainPanel(
 			h2("3D view"),
+			includeCSS("loader.css"),
+			HTML("<div class='loader' style='position: absolute; left: 400px; top: 300px; z-index: -10000;'>Loading...</div>"),
 			rglwidgetOutput("view3d_pairwise", width="800px", height="800px"),
 			conditionalPanel(condition = "output.pairwise_nblast_complete",
 				h2("NBLAST results"),
@@ -103,6 +107,8 @@ tabPanel("Upload a tracing",
 
 		mainPanel(
 			h2("3D view"),
+			includeCSS("loader.css"),
+			HTML("<div class='loader' style='position: absolute; left: 400px; top: 300px; z-index: -10000;'>Loading...</div>"),
 			rglwidgetOutput("view3d_tracing", width="800px", height="800px"),
 			conditionalPanel(condition = "output.tracing_nblast_complete",
 				h2("NBLAST results"),
