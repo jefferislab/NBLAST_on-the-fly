@@ -85,8 +85,12 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 	paste0(links, collapse="<span style='color: black;'>, </span>")
 }
 
+# make a memoised version of this function
+# only persists for session
+gmr_vfbid_memo=memoise::memoise(gmr_vfbid)
+
 links_for_gmr <- function(gmrs, query) {
-	gmr_ids <- gmr_vfbid(gmrs)
+	gmr_ids <- gmr_vfbid_memo(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
 	hrefs <- sapply(gmr_ids, function(x) vfb_stack_url(c(x, query_id), clear=TRUE))
 	links <- paste0("<a href='", hrefs, "' target='_blank'>", paste0("GMR_", gmrs), "</a>")
@@ -95,7 +99,7 @@ links_for_gmr <- function(gmrs, query) {
 }
 
 link_for_all_gmrs <- function(gmrs, query) {
-	gmr_ids <- gmr_vfbid(gmrs)
+	gmr_ids <- gmr_vfbid_memo(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
 	hrefs <- vfb_stack_url(c(rev(gmr_ids[!is.na(gmr_ids)]), query_id), clear=TRUE)
 	links <- paste0("<a href='", hrefs, "' target='_blank'>View all these hits on Virtual Fly Brain.</a>")
