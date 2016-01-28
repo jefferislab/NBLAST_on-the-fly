@@ -335,7 +335,11 @@ output$view3d_tracing <- renderRglwidget({
 ########
 output$gal4_hits <- renderTable({
 	query_neuron <- input$gal4_query
-	if(query_neuron == "") return(NULL)
+	if(query_neuron == "") return({
+		messagedf <- data.frame(f='Please enter a FlyCircuit neuron id such as fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.')
+		colnames(messagedf) <- ""
+		messagedf
+		})
 	query_neuron <- fc_gene_name(input$gal4_query)
 	if(is.na(query_neuron))  stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 
