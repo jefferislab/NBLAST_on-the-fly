@@ -147,6 +147,8 @@ tabPanel("GAL4",
 			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: #000000; }", collapse="\n"), "</style>")),
 			h2("NBLAST results"),
 			h3("Top hits"),
+			includeCSS("loader.css"),
+			HTML("<div class='loader' style='position: absolute; left: 400px; top: 130px; z-index: -10000;'>Loading...</div>"),
 			htmlOutput("gal4_view_all"),
 			tableOutput("gal4_hits")
 		)
