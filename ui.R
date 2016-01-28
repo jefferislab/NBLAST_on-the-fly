@@ -147,6 +147,9 @@ tabPanel("GAL4",
 			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: #000000; }", collapse="\n"), "</style>")),
 			h2("NBLAST results"),
 			h3("Top hits"),
+			conditionalPanel(condition = 'output.gal4_loading',
+				HTML("Loading...")
+			),
 			htmlOutput("gal4_view_all"),
 			tableOutput("gal4_hits")
 		)
