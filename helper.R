@@ -122,6 +122,15 @@ flylight_links<-function(gmrs) {
 	sprintf('<a href="%s" target="_blank"> GMR_%s </a>', hrefs, gmrs)
 }
 
+gmr_stack_urls=readRDS('gmr_stack_urls.rds')
+gmr_download_links<-function(gmrs){
+	hrefs=gmr_stack_urls[gmrs]
+	links <- sprintf('<a href="%s" target="_blank">GMR_%s.nrrd</a>', hrefs, gmrs)
+	links[is.na(hrefs)] <- gmrs[is.na(hrefs)]
+	links
+}
+
+
 # Wrapper function for dotprops.character to handle some checks/restrictions that are quite specific to shiny usage
 dotprops_from_nrrd<-function(f, ...) {
 	ni <- read.im3d(f, ReadData = F)
