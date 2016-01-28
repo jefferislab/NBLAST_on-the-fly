@@ -89,11 +89,11 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 # only persists for session
 gmr_vfbid_memo=memoise::memoise(gmr_vfbid)
 
-links_for_gmr <- function(gmrs, query) {
+links_for_gmr <- function(gmrs, query, linktext=paste0("GMR_", gmrs)) {
 	gmr_ids <- gmr_vfbid_memo(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
 	hrefs <- sapply(gmr_ids, function(x) vfb_stack_url(c(x, query_id), clear=TRUE))
-	links <- paste0("<a href='", hrefs, "' target='_blank'>", paste0("GMR_", gmrs), "</a>")
+	links <- paste0("<a href='", hrefs, "' target='_blank'>", linktext, "</a>")
 	links[is.na(gmr_ids)] <- gmrs[is.na(gmr_ids)]
 	links
 }
