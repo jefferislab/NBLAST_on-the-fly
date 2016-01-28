@@ -139,7 +139,7 @@ tabPanel("GAL4",
 			h3("Query:"),
 			textInput("gal4_query", "", ""),
 			h3("Num hits:"),
-			sliderInput("gal4_n", "", 0, 100, 10, 1),
+			sliderInput("gal4_n", "", 1, 100, 10, 1),
 			submitButton("NBLAST")
 		),
 
