@@ -98,6 +98,16 @@ links_for_gmr <- function(gmrs, query) {
 	links
 }
 
+thumbnail_images <- function(gmrs) {
+	gmr_ids <- gmr_vfbid_memo(gmrs)
+	# not sure why the ids have different forms, but they do
+	gmr_iids <- sub("VFB_","VFBi_", gmr_ids, fixed = TRUE)
+	thumbnail_urls=paste0("http://vfbdev.inf.ed.ac.uk/owl/",gmr_iids,"/thumbnail.png")
+	links <- sprintf('<img src="%s" alt="%s">', thumbnail_urls, paste0("GMR_", gmrs))
+	links[is.na(gmr_iids)] <- gmrs[is.na(gmr_iids)]
+	links
+}
+
 link_for_all_gmrs <- function(gmrs, query) {
 	gmr_ids <- gmr_vfbid_memo(gmrs)
 	query_id <- as.character(vfb_ids[vfb_ids$Name %in% query, 'vfbid'])
