@@ -341,10 +341,10 @@ output$gal4_hits <- renderTable({
 
 	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
 	if(is.null(scores)) return(NULL)
-	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
+	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query, linktext = thumbnail_images(scores$id))
 	names(gmr_stack_links) <- rownames(scores)
-	data.frame(n=seq.int(length(gmr_stack_links)), line=gmr_stack_links,
-						 score=scores$score, thumbnail=thumbnail_images(scores$id))
+	data.frame(n=seq.int(length(gmr_stack_links)), Line=flylight_links(scores$id),
+						 Score=scores$score, Stack=gmr_stack_links)
 }, sanitize.text.function = force, include.rownames=FALSE)
 
 output$gal4_view_all <- renderText({
