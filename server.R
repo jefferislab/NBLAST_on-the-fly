@@ -333,23 +333,6 @@ output$view3d_tracing <- renderRglwidget({
 ########
 # GAL4 #
 ########
-output$gal4_loading <- reactive({
-	scores <- gal4_scores()
-	return(is.null(scores))
-})
-outputOptions(output, 'gal4_loading', suspendWhenHidden=FALSE)
-
-gal4_scores <- reactive({
-	query_neuron <- input$gal4_query
-	if(query_neuron == "") return(NULL)
-	query_neuron <- fc_gene_name(input$gal4_query)
-	if(is.na(query_neuron))  stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
-
-	scores <- vfb_nblast(query_neuron, target="GMR-Gal4", n=input$gal4_n)
-	if(is.null(scores)) return(NULL)
-	scores
-})
-
 output$gal4_hits <- renderTable({
 	query_neuron <- input$gal4_query
 	if(query_neuron == "") return(NULL)
