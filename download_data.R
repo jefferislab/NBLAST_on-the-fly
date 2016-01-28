@@ -6,4 +6,4 @@ library(flycircuit)
 
 message("Downloading (updated) data objects to: ", getOption("flycircuit.datadir"))
 fc_download_data('http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds')
-fc_download_data('http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b', type = 'bigmat')
+fc_download_data('http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.desc', type = 'bigmat')
