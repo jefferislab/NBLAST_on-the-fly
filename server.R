@@ -343,7 +343,8 @@ output$gal4_hits <- renderTable({
 	if(is.null(scores)) return(NULL)
 	gmr_stack_links <- links_for_gmr(scores$id, input$gal4_query)
 	names(gmr_stack_links) <- rownames(scores)
-	data.frame(line=gmr_stack_links, score=scores$score)
+	data.frame(n=seq.int(length(gmr_stack_links)), line=gmr_stack_links,
+						 score=scores$score, thumbnail=thumbnail_images(scores$id))
 }, sanitize.text.function = force, include.rownames=FALSE)
 
 output$gal4_view_all <- renderText({
