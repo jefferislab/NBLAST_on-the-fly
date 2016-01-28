@@ -116,6 +116,11 @@ link_for_all_gmrs <- function(gmrs, query) {
 	links
 }
 
+# return links to the FlyLight website.
+flylight_links<-function(gmrs) {
+	hrefs <- sprintf("http://flweb.janelia.org/cgi-bin/view_flew_imagery.cgi?line=R%s", gmrs)
+	sprintf('<a href="%s" target="_blank"> GMR_%s </a>', hrefs, gmrs)
+}
 
 # Wrapper function for dotprops.character to handle some checks/restrictions that are quite specific to shiny usage
 dotprops_from_nrrd<-function(f, ...) {
