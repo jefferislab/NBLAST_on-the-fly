@@ -25,6 +25,7 @@ tabPanel("One against all",
 			h3("Query:"),
 			textInput("all_query", "", ""),
 			checkboxInput("all_use_mean", label="Use mean scores", value=FALSE),
+			HTML("<i>Using the mean score is useful for finding exact matches, i.e. one in which the target is a good hit for the query and the query is a good hit for the target too. This is particularly useful for clustering neurons into types, rather than, for example, just finding neurons that go through the same tract but branch off differently.</i><br /><br />"),
 			submitButton("NBLAST")
 		),
 
@@ -104,6 +105,7 @@ tabPanel("Upload a tracing",
 			checkboxInput("tracing_mirror", "Mirror?", value=FALSE),
 			checkboxInput('tracing_all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
 			checkboxInput('tracing_use_mean', label="Use mean scores", value=FALSE),
+			HTML("<i>Using the mean score is useful for finding exact matches, i.e. one in which the target is a good hit for the query and the query is a good hit for the target too. This is particularly useful for clustering neurons into types, rather than, for example, just finding neurons that go through the same tract but branch off differently.</i><br /><br />"),
 			submitButton("NBLAST")
 		),
 
