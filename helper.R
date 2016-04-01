@@ -43,7 +43,7 @@ vfb_url <- function(neuron_name, style=c("dev", "old")) {
 	if(style=='old'){
 		paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
 	} else {
-		paste0("http://vfbsandbox3.inf.ed.ac.uk/site/stacks/index.htm?add=", paste0(vfb_id, collapse=','), "&clear=true")
+		paste0("http://www.virtualflybrain.org/site/stacks/index.htm?add=", paste0(vfb_id, collapse=','), "&clear=true")
 	}
 }
 
@@ -78,7 +78,7 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 	links <- sapply(type, function(x) {
 		ffbt <- vfb_annotations[vfb_annotations$a.text == x, 'class_id']
 		if(style == "old") url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
-		else url <- paste0("http://vfbsandbox3.inf.ed.ac.uk/site/tools/anatomy_finder/index.htm?id=", ffbt)
+		else url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
 		link <- ifelse(length(ffbt) == 0, paste0("<span style='color: black;'>", x, "</span>"), paste0("<a target='_blank' href='", url, "'>", x, "</a>"))
 		link
 	})
@@ -102,7 +102,7 @@ thumbnail_images <- function(gmrs) {
 	gmr_ids <- gmr_vfbid_memo(gmrs)
 	# not sure why the ids have different forms, but they do
 	gmr_iids <- sub("VFB_","VFBi_", gmr_ids, fixed = TRUE)
-	thumbnail_urls=paste0("http://vfbdev.inf.ed.ac.uk/owl/",gmr_iids,"/thumbnail.png")
+	thumbnail_urls=paste0("http://www.virtualflybrain.org/owl/",gmr_iids,"/thumbnail.png")
 	links <- sprintf('<img src="%s" alt="%s">', thumbnail_urls, paste0("GMR_", gmrs))
 	links[is.na(gmr_iids)] <- gmrs[is.na(gmr_iids)]
 	links
