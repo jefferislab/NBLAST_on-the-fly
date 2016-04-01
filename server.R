@@ -47,7 +47,7 @@ output$hash <- renderText(newHash())
 # One against all #
 ###################
 all_scores <- reactive({
-	query_neuron <- fc_gene_name(gsub(" ", "", input$all_query))
+	query_neuron <- fc_gene_name(gsub("[^A-z,0-9,-]", "", input$all_query))
 	if (is.na(query_neuron)) return(NULL)
 	scores <- list()
 
@@ -82,7 +82,7 @@ output$view3d_one_against_all <- renderRglwidget({
 	plot3d(FCWB)
 	frontalView()
 
-	query_neuron <- gsub(" ", "", input$all_query)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$all_query)
 	if(query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 	query_neuron <- fc_gene_name(query_neuron)
 
@@ -96,9 +96,9 @@ output$view3d_one_against_all <- renderRglwidget({
 
 
 output$all_download <- downloadHandler(
-	filename = function() { paste0(gsub(" ", "", input$all_query), '_nblast_results_', Sys.Date(), '.csv') },
+	filename = function() { paste0(gsub("[^A-z,0-9,-]", "", input$all_query), '_nblast_results_', Sys.Date(), '.csv') },
 	content = function(file) {
-		query_neuron <- fc_gene_name(gsub(" ", "", input$all_query))
+		query_neuron <- fc_gene_name(gsub("[^A-z,0-9,-]", "", input$all_query))
 		scores <- all_scores()
 		score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/fc_nblast(query_neuron, query_neuron, scoremat=allbyall))
 		score_table$type=sapply(score_table$neuron, function(x) paste0(type_for_neuron(x), collapse=", "))
@@ -117,7 +117,7 @@ output$all_vfb_viewer <- renderText({
 
 
 output$all_top10_hits <- renderTable({
-	query_neuron <- fc_gene_name(gsub(" ", "", input$all_query))
+	query_neuron <- fc_gene_name(gsub("[^A-z,0-9,-]", "", input$all_query))
 	scores <- all_scores()
 	if(is.null(scores)) return(NULL)
 	top10 <- scores[2:11]
@@ -136,7 +136,7 @@ output$all_top10_hits <- renderTable({
 
 
 output$all_top10_clusters <- renderTable({
-	query_neuron <- fc_gene_name(gsub(" ", "", input$all_query))
+	query_neuron <- fc_gene_name(gsub("[^A-z,0-9,-]", "", input$all_query))
 	scores <- all_scores()
 	if(is.null(scores)) return(NULL)
 	clusters <- apresdf[fc_gene_name(names(scores)), 'cluster']
@@ -168,8 +168,8 @@ output$view3d_pairwise <- renderRglwidget({
 	plot3d(FCWB)
 	frontalView()
 
-	query_neuron <- gsub(" ", "", input$pairwise_query)
-	target_neuron <- gsub(" ", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
 	if ((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 
 	if(nzchar(query_neuron) & nzchar(target_neuron)) {
@@ -184,8 +184,8 @@ output$view3d_pairwise <- renderRglwidget({
 
 
 output$pairwise_query_target <- renderText({
-	query_neuron <- gsub(" ", "", input$pairwise_query)
-	target_neuron <- gsub(" ", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
 	if(nzchar(query_neuron) & nzchar(target_neuron)) {
 		paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
 	} else {
@@ -195,8 +195,8 @@ output$pairwise_query_target <- renderText({
 
 
 output$pairwise_results <- renderText({
-	query_neuron <- gsub(" ", "", input$pairwise_query)
-	target_neuron <- gsub(" ", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
 	if(query_neuron == "" | target_neuron == "") {
 		""
 	} else {
@@ -206,8 +206,8 @@ output$pairwise_results <- renderText({
 
 
 output$pairwise_nblast_complete <- reactive({
-	query_neuron <- gsub(" ", "", input$pairwise_query)
-	target_neuron <- gsub(" ", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
 	return(ifelse(query_neuron == "" || target_neuron == "", FALSE, TRUE))
 })
 outputOptions(output, 'pairwise_nblast_complete', suspendWhenHidden=FALSE)
@@ -334,7 +334,7 @@ output$view3d_tracing <- renderRglwidget({
 # GAL4 #
 ########
 output$gal4_hits <- renderTable({
-	query_neuron <- gsub(" ", "", input$gal4_query)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$gal4_query)
 	if(query_neuron == "") return(NULL)
 	query_neuron <- fc_gene_name(input$gal4_query)
 	if(is.na(query_neuron))  stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
