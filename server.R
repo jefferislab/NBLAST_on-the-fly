@@ -360,6 +360,17 @@ output$gal4_hits <- renderTable({
 						 Download.Registered=gmr_download_links(scores$id))
 }, sanitize.text.function = force, include.rownames=FALSE)
 
+
+output$gal4_query <- renderUI({
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$gal4_query)
+	if(nzchar(query_neuron)) {
+		HTML(paste0("Query neuron: ", query_neuron, "<h3>Top hits</h3>"))
+	} else {
+		NULL
+	}
+})
+
+
 output$gal4_view_all <- renderText({
 	query_neuron <- fc_gene_name(input$gal4_query)
 	if(is.na(query_neuron)) return(NULL)
