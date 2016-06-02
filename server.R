@@ -95,6 +95,16 @@ output$view3d_one_against_all <- renderRglwidget({
 })
 
 
+output$one_query <- renderText({
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$all_query)
+	if(nzchar(query_neuron)) {
+		paste0("Query neuron: ", query_neuron)
+	} else {
+		NULL
+	}
+})
+
+
 output$all_download <- downloadHandler(
 	filename = function() { paste0(gsub("[^A-z,0-9,-]", "", input$all_query), '_nblast_results_', Sys.Date(), '.csv') },
 	content = function(file) {
