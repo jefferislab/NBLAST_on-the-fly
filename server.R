@@ -9,6 +9,7 @@ library(downloader)
 library(vfbr)
 
 options(rgl.useNULL=TRUE)
+options(vfbr.server = 'http://www.virtualflybrain.org')
 
 source("helper.R")
 
