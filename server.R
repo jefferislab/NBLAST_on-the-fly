@@ -14,7 +14,7 @@ options(vfbr.server = 'http://www.virtualflybrain.org')
 source("helper.R")
 
 # URL synching
-url_fields_to_sync <- c("all_query")
+url_fields_to_sync <- c("all_query", "all_use_mean")
 
 shinyServer(function(input, output) {
 
