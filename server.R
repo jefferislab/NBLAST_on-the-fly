@@ -7,42 +7,17 @@ library(flycircuit)
 library(ggplot2)
 library(downloader)
 library(vfbr)
+library(shinyURL)
+
 
 options(rgl.useNULL=TRUE)
 options(vfbr.server = 'http://www.virtualflybrain.org')
 
 source("helper.R")
 
-# URL synching
-url_fields_to_sync <- c("all_query", "all_use_mean")
-
 shinyServer(function(input, output) {
 
-################
-# URL synching #
-################
-firstTime <- TRUE
-
-newHash <- function() {
-	newHash <- paste(collapse=",", Map(function(field) { paste(sep="=", field, input[[field]]) }, url_fields_to_sync))
-	return(
-		if (!firstTime) {
-			newHash
-		} else {
-			if (is.null(input$hash)) {
-				NULL
-			} else {
-				firstTime <<- FALSE;
-				isolate(input$hash)
-			}
-		}
-	)
-}
-
-output$hash <- renderText(newHash())
-
-
-
+shinyURL.server()
 
 ###################
 # One against all #
@@ -179,8 +154,8 @@ output$view3d_pairwise <- renderRglwidget({
 	plot3d(FCWB)
 	frontalView()
 
-	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
-	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_target)
 	if ((query_neuron != "" & !fc_gene_name(query_neuron) %in% names(dps)) | (target_neuron != "" & !fc_gene_name(target_neuron) %in% names(dps))) stop("Invalid neuron name! Valid names include fru-M-200266, Gad1-F-400113, Trh-M-400076, VGlut-F-800287, etc.")
 
 	if(nzchar(query_neuron) & nzchar(target_neuron)) {
@@ -195,8 +170,8 @@ output$view3d_pairwise <- renderRglwidget({
 
 
 output$pairwise_query_target <- renderText({
-	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
-	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_target)
 	if(nzchar(query_neuron) & nzchar(target_neuron)) {
 		paste0("Query neuron: ", query_neuron, ", target neuron: ", target_neuron)
 	} else {
@@ -206,8 +181,8 @@ output$pairwise_query_target <- renderText({
 
 
 output$pairwise_results <- renderText({
-	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
-	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_target)
 	if(query_neuron == "" | target_neuron == "") {
 		""
 	} else {
@@ -217,8 +192,8 @@ output$pairwise_results <- renderText({
 
 
 output$pairwise_nblast_complete <- reactive({
-	query_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_query)
-	target_neuron <- gsub("[^A-z,0-9,-]", "", input$pairwise_target)
+	query_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_query)
+	target_neuron <- gsub("[^A-z,0-9,-]", "", input$.pairwise_target)
 	return(ifelse(query_neuron == "" || target_neuron == "", FALSE, TRUE))
 })
 outputOptions(output, 'pairwise_nblast_complete', suspendWhenHidden=FALSE)
@@ -230,11 +205,11 @@ outputOptions(output, 'pairwise_nblast_complete', suspendWhenHidden=FALSE)
 # Upload a tracing #
 ####################
 tracing <- reactive({
-	template_brain <- input$tracing_brain
+	template_brain <- input$.tracing_brain
 	if(template_brain == 'Select a template brain') return(NULL)
 
 	isolate({
-	query_neuron <- input$tracing_file
+	query_neuron <- input$.tracing_file
 	if(is.null(query_neuron)) return(NULL)
 	if(grepl("\\.nrrd", query_neuron$name)) {
 		# TODO come up with a heuristic to choose the number of neighbours (k)
@@ -252,7 +227,7 @@ tracing <- reactive({
 		template_brain <- get(template_brain)
 		tracing_neuron <- xform_brain(tracing_neuron, sample=template_brain, reference=FCWB)
 	}
-	if(input$tracing_mirror)
+	if(input$.tracing_mirror)
 		tracing_neuron <- mirror_brain(tracing_neuron, FCWB)
 	tracing_neuron
 })
@@ -263,16 +238,16 @@ tracing_nblast_scores <- reactive({
 	scores <- list()
 	withProgress(min=1, max=10, message="NBLAST in progress", expr={
 		for(i in 1:10) {
-			if(!input$tracing_all_neurons) {
+			if(!input$.tracing_all_neurons) {
 				chunk <- split(1:length(exemplars), cut(1:length(exemplars), 10))[[i]]
-				if(input$tracing_use_mean) {
+				if(input$.tracing_use_mean) {
 					scores[[i]] <- (nblast(dotprops(query_neuron), dps[exemplars[chunk]], normalised=TRUE) + nblast(dps[exemplars[chunk]], dotprops(query_neuron), normalised=TRUE)) / 2
 				} else {
 					scores[[i]] <- nblast(dotprops(query_neuron), dps[exemplars[chunk]])
 				}
 			} else {
 				chunk <- split(1:length(dps), cut(1:length(dps), 10))[[i]]
-				if(input$tracing_use_mean) {
+				if(input$.tracing_use_mean) {
 					scores[[i]] <- (nblast(dotprops(query_neuron), dps[chunk], normalised=TRUE) + nblast(dps[chunk], dotprops(query_neuron), normalised=TRUE)) / 2
 				} else {
 					scores[[i]] <- nblast(dotprops(query_neuron), dps[chunk])
@@ -309,7 +284,7 @@ output$tracing_nblast_results_top10 <- renderTable({
 }, sanitize.text.function = force)
 
 output$tracing_nblast_results_download <- downloadHandler(
-	filename = function() {  paste0(input$tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
+	filename = function() {  paste0(input$.tracing_file$name, '_nblast_results_', Sys.Date(), '.csv') },
 	content = function(file) {
 		scores <- tracing_nblast_scores()
 	score_table <- data.frame(neuron=names(scores), raw=scores, norm=scores/nblast(dotprops(tracing()), dotprops(tracing())), type=sapply(names(scores), function(x) paste0(type_for_neuron(x), collapse=", ")))
@@ -367,7 +342,7 @@ output$gal4_query <- renderUI({
 	if(nzchar(query_neuron)) {
 		HTML(paste0("Query neuron: ", query_neuron, "<h3>Top hits</h3>"))
 	} else {
-		NULL
+		"Press NBLAST when ready!"
 	}
 })
 

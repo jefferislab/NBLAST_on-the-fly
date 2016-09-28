@@ -1,25 +1,20 @@
 library(shiny)
 library(rglwidget)
-
-# URL synching
-hashProxy <- function(inputoutputID) {
-	div(id=inputoutputID,class=inputoutputID,tag("div",""));
-}
-
-shinyUI(navbarPage("NBLAST on-the-fly",
+library(shinyURL)
 
 
-
+shinyUI(navbarPage("NBLAST on-the-fly", id="tab",
 
 ###################
 # One against all #
 ###################
 tabPanel("One against all",
 	includeCSS("errors.css"),
+	shinyURL.ui(display=F),
 	sidebarLayout(
 		sidebarPanel(
-			includeHTML("url.js"),
-			hashProxy("hash"),
+			# includeHTML("url.js"),
+			# hashProxy("hash"),
 			h3("Instructions"),
 			HTML("Enter a FlyCircuit neuron id to compare against all FlyCircuit neurons, with NBLAST. If the checkbox below is ticked, both forwards and reverse scores will be calculated, normalised and averaged, rather than just using the forwards score. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
 			h3("Query:"),
@@ -67,9 +62,9 @@ tabPanel("Pairwise comparison",
 			h3("Instructions"),
 			HTML("Enter two FlyCircuit neuron ids to compare with NBLAST. The <span style='color: red;'>query neuron will be plotted in red</span> in the 3D viewer to the right, while the <span style='color: blue;'>target neuron will be drawn in blue</span>."),
 			h3("Query:"),
-			textInput("pairwise_query", "", "fru-M-200266"),
+			textInput(".pairwise_query", "", "fru-M-200266"),
 			h3("Target:"),
-			textInput("pairwise_target","", "fru-F-900020"),
+			textInput(".pairwise_target","", "fru-F-900020"),
 			submitButton("NBLAST")
 		),
 
@@ -102,11 +97,11 @@ tabPanel("Upload a tracing",
 			HTML("Upload a tracing or skeletonised neuron to compare against all FlyCircuit cluster examplars (or all neurons, if checkbox below is ticked), using NBLAST. The query neuron will be <b><span style='color: black;'>plotted in black</span></b> in the 3D viewer to the right, alongside the top 10 hits (rainbow coloured from <span style='color: red;'>red = best</span> to <span style='color: #FF0099;'>pink = worst</span>)."),
 			h3("Query"),
 			HTML("<b><span style='color: red;'>This tracing must be registered to one of the template brains we support (see below).</span></b><br /><br />"),
-			fileInput('tracing_file', "Your tracing (e.g. swc) or skeletonised neuron (nrrd file):"),
-			selectInput('tracing_brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
-			checkboxInput("tracing_mirror", "Mirror?", value=FALSE),
-			checkboxInput('tracing_all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
-			checkboxInput('tracing_use_mean', label="Use mean scores", value=FALSE),
+			fileInput('.tracing_file', "Your tracing (e.g. swc) or skeletonised neuron (nrrd file):"),
+			selectInput('.tracing_brain', 'Template brain (FCWB – FlyCircuit; JFRC2 – Janelia FlyLight; IS2 – Cambridge; T1 – Vienna)', c('Select a template brain', 'FCWB', 'JFRC2', 'IS2', 'T1')),
+			checkboxInput(".tracing_mirror", "Mirror?", value=FALSE),
+			checkboxInput('.tracing_all_neurons', label="Compare with all neurons, not just exemplars (WARNING: this will take a few minutes)", value=FALSE),
+			checkboxInput('.tracing_use_mean', label="Use mean scores", value=FALSE),
 			HTML("<i>Using the mean score is useful for finding exact matches, i.e. one in which the target is a good hit for the query and the query is a good hit for the target too. This is particularly useful for clustering neurons into types, rather than, for example, just finding neurons that go through the same tract but branch off differently.</i><br /><br />"),
 			submitButton("NBLAST")
 		),
@@ -144,7 +139,8 @@ tabPanel("GAL4",
 			h3("Instructions"),
 			HTML("Enter a FlyCircuit neuron id to compare against all FlyLight GAL4 lines, with NBLAST."),
 			h3("Query:"),
-			textInput("gal4_query", "", "TPHMARCM-509F-montage_seg1"),
+			HTML("<i>E.g. TPHMARCM-509F-montage_seg1</i>"),
+			textInput("gal4_query", "", ""),
 			h3("Num hits:"),
 			sliderInput("gal4_n", "", 1, 100, 10, 1),
 			submitButton("NBLAST")
@@ -155,8 +151,6 @@ tabPanel("GAL4",
 			HTML(paste0("<style>", paste0("tr:nth-child(", 2:11, ") { color: #000000; }", collapse="\n"), "</style>")),
 			h2("NBLAST results"),
 			htmlOutput("gal4_query"),
-			includeCSS("loader.css"),
-			HTML("<div class='loader' style='position: absolute; left: 280px; top: 130px; z-index: -10000;'>Loading...</div>"),
 			htmlOutput("gal4_view_all"),
 			tableOutput("gal4_hits")
 		)
