@@ -100,11 +100,9 @@ links_for_gmr <- function(gmrs, query, linktext=paste0("GMR_", gmrs)) {
 
 thumbnail_images <- function(gmrs) {
 	gmr_ids <- gmr_vfbid_memo(gmrs)
-	# not sure why the ids have different forms, but they do
-	gmr_iids <- sub("VFB_","VFBi_", gmr_ids, fixed = TRUE)
-	thumbnail_urls=paste0("http://www.virtualflybrain.org/owl/",gmr_iids,"/thumbnail.png")
+	thumbnail_urls=paste0("http://www.virtualflybrain.org/reports/",gmr_ids,"/thumbnail.png")
 	links <- sprintf('<img src="%s" alt="%s">', thumbnail_urls, paste0("GMR_", gmrs))
-	links[is.na(gmr_iids)] <- gmrs[is.na(gmr_iids)]
+	links[is.na(gmr_ids)] <- gmrs[is.na(gmr_ids)]
 	links
 }
 
