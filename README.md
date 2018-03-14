@@ -23,7 +23,8 @@ if(!require("devtools")) {
 
 install_github("jefferis/flycircuit", dependencies=TRUE)
 install_github("jefferislab/nat.flybrains", dependencies=TRUE)
-install.packages(c("shiny","ggplot2", "downloader"))
+install_github("aoles/shinyURL")
+install.packages(c("shiny","ggplot2", "downloader", "rglwidget"))
 ```
 ### Data
 You will also need to download our processed/registered version of the 
