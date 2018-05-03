@@ -1,5 +1,4 @@
 library(shiny)
-library(rglwidget)
 library(shinyURL)
 
 
