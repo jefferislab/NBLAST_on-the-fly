@@ -7,7 +7,7 @@ library(ggplot2)
 library(downloader)
 library(vfbr)
 library(shinyURL)
-
+library(rgl)
 
 options(rgl.useNULL=TRUE)
 options(vfbr.server = 'http://www.virtualflybrain.org')

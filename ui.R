@@ -1,6 +1,6 @@
 library(shiny)
 library(shinyURL)
-
+library(rgl)
 
 shinyUI(navbarPage("NBLAST on-the-fly", id="tab",
 
