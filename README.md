@@ -13,19 +13,12 @@ You can actually run the nblast server on your own machine with relatively littl
 * RStudio
 
 ### Installation 
-From an interactive R session:
-```r
-# several packages are not on CRAN and require devtools for installation
-if(!require("devtools")) {
-  install.packages("devtools")
-  library(devtools)
-}
+Assuming that you have opened `NBLAST_on-the-fly.Rproj`
 
-install_github("jefferis/flycircuit", dependencies=TRUE)
-install_github("jefferislab/nat.flybrains", dependencies=TRUE)
-install_github("aoles/shinyURL")
-install.packages(c("shiny","ggplot2", "downloader", "rglwidget"))
 ```
+source("install_packages.R")
+```
+
 ### Data
 You will also need to download our processed/registered version of the 
 [flycircuit.tw](http://flycircuit.tw) dataset. The flycircuit package will 
@@ -33,13 +26,13 @@ enable you to do this. Note that the data will be installed in a default locatio
 within the home folder of the current user; therefore you must download the data
 while running as the user that will be used to run the shiny app.
 
-```r
-library(flycircuit)
+Assuming that you have opened `NBLAST_on-the-fly.Rproj`
 
-allbyall=load_si_data("allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.desc")
-dps=load_si_data("dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds")
-apres16k.p0=load_si_data("apres16k.p0.rds")
 ```
+source("download_data.R")
+```
+
+will do the trick.
 
 ### Running Shiny
 ```
