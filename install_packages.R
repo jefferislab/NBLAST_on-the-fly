@@ -21,6 +21,7 @@ devtools::install_github("jefferislab/nat.flybrains", dependencies=TRUE)
 devtools::install_github("jefferislab/nat.nblast", dependencies=TRUE)
 devtools::install_github("jefferis/flycircuit", dependencies=TRUE)
 devtools::install_github("jefferis/vfbr")
+devtools::install_github("jefferis/elmr")
 
 ## download our standard set of registrations
 library(nat.flybrains)

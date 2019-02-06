@@ -8,6 +8,7 @@ library(downloader)
 library(vfbr)
 library(shinyURL)
 library(rgl)
+library(elmr)
 
 options(rgl.useNULL=TRUE)
 options(vfbr.server = 'http://www.virtualflybrain.org')
@@ -218,7 +219,9 @@ tracing <- reactive({
 		if (grepl("\\.swc", query_neuron$name))
 			tracing_neuron <- nat:::read.neuron.swc(query_neuron$datapath)
 		else tracing_neuron <- read.neuron(query_neuron$datapath)
-		tracing_neuron <- dotprops(tracing_neuron, k=5, resample=1)
+		if(template_brain=='FAFB14')
+			tracing_neuron <- dotprops(tracing_neuron/1e3, k=5, resample=1)*1e3
+		else tracing_neuron <- dotprops(tracing_neuron, k=5, resample=1)
 	}
 	})
 
