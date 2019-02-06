@@ -1,5 +1,4 @@
 library(shiny)
-library(rglwidget)
 library(nat)
 library(nat.nblast)
 library(nat.flybrains)
