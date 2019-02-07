@@ -12,5 +12,7 @@ message("Downloading (updated) data objects to: ", getOption("flycircuit.datadir
 dps<-read.neuronlistfh("http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon.rds",
 											 localdir=getOption('flycircuit.datadir'))
 remotesync(dps, download.missing = TRUE)
+# this is the object with neurons that we actually need
+fc_download_data('http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/dpscanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.rds')
 fc_download_data('http://flybrain.mrc-lmb.cam.ac.uk/si/nblast/flycircuit/allbyallblastcanon_f9dc90ce5b2ffb74af37db1e3a2cb35b.desc', type = 'bigmat')
 apres16k.p0=load_si_data("apres16k.p0.rds")
