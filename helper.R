@@ -41,9 +41,9 @@ vfb_url <- function(neuron_name, style=c("dev", "old")) {
 	style=match.arg(style, c("dev", "old"))
 	vfb_id <- as.character(vfb_ids[vfb_ids$Name %in% neuron_name, 'vfbid'])
 	if(style=='old'){
-		paste0("http://www.virtualflybrain.org/site/tools/view_stack/3rdPartyStack.htm?json=FlyCircuit2012/", neuron_name, "/wlz_meta/tiledImageModelData.jso&type=THIRD_PARTY_STACK&tpbid=", vfb_id)
+		paste0("https://v2.virtualflybrain.org/org.geppetto.frontend/geppetto?id=", vfb_id)
 	} else {
-		paste0("http://www.virtualflybrain.org/site/stacks/index.htm?add=", paste0(vfb_id, collapse=','), "&clear=true")
+		paste0("https://v2.virtualflybrain.org/org.geppetto.frontend/geppetto?id=", paste0(vfb_id, collapse=','))
 	}
 }
 
@@ -77,8 +77,8 @@ link_for_neuron_type <- function(type, style=c("dev", "old")) {
 	style <- match.arg(style, c("dev", "old"))
 	links <- sapply(type, function(x) {
 		ffbt <- vfb_annotations[vfb_annotations$a.text == x, 'class_id']
-		if(style == "old") url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
-		else url <- paste0("http://www.virtualflybrain.org/site/tools/anatomy_finder/index.htm?id=", ffbt)
+		if(style == "old") url <- paste0("https://v2.virtualflybrain.org/org.geppetto.frontend/geppetto?id=", ffbt)
+		else url <- paste0("https://v2.virtualflybrain.org/org.geppetto.frontend/geppetto?id=", ffbt)
 		link <- ifelse(length(ffbt) == 0, paste0("<span style='color: black;'>", x, "</span>"), paste0("<a target='_blank' href='", url, "'>", x, "</a>"))
 		link
 	})
